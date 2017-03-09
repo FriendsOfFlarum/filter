@@ -94,9 +94,10 @@ class FilterPosts
    public function sendEmail($post)
    {
         $email = $post->user->email;
-        $subject = $this->translator->trans('issyrocks12-filter.admin.email.subject');
-        $text = $this->translator->trans('issyrocks12-filter.admin.email.text');
-        $this->mailer->send(['raw' => $text], [], function (Message $message) use ($subject, $email) {
+        $linebreaks = array("\n", "\r\n");
+        $subject = $this->settings->get('flaggedSubject');
+        $text = str_replace($linebreaks, $post->user->username, $this->settings->get('flaggedEmail'));
+        $this->mailer->send('issyrocks12-filter::default', ['text' => $text], function (Message $message) use ($subject, $email) {
         $message->to($email);
         $message->subject($subject);
           

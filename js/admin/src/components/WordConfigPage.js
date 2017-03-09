@@ -12,7 +12,9 @@ export default class WordConfigPage extends Component {
 			
     this.fields = [
       'Words',
-			'emailWhenFlagged'
+			'emailWhenFlagged',
+			'flaggedEmail',
+			'flaggedSubject'
     ]
 			
 	this.values = {};
@@ -33,18 +35,33 @@ export default class WordConfigPage extends Component {
                 <div className="WordConfigPage-Settings-input">
 									<div className="helpText">
               				{app.translator.trans('issyrocks12-filter.admin.help')}
-            			</div>
+            		</div>
                   <textarea className="FormControl" placeholder={app.translator.trans('issyrocks12-filter.admin.input.placeholder')} rows="6" value={this.values.Words() || null} oninput={m.withAttr('value', this.values.Words)} />
-                </div>
+								</div>
               ]
             })}
+						{FieldSet.component({
+								label: app.translator.trans('issyrocks12-filter.admin.input.email_label'),
+              	className: 'WordConfigPage-Settings',
+              	children: [
+								<div className="WordConfigPage-Settings-input">
+										<label>{app.translator.trans('issyrocks12-filter.admin.input.email_subject')}</label>
+										<input className="FormControl" value={this.values.flaggedSubject() || app.translator.trans('issyrocks12-filter.admin.email.default_subject')} oninput={m.withAttr('value', this.values.flaggedSubject)} />
+										<label>{app.translator.trans('issyrocks12-filter.admin.input.email_body')}</label>
+										<div className="helpText">
+              					{app.translator.trans('issyrocks12-filter.admin.email_help')}
+            				</div>
+									<textarea className="FormControl" rows="4" value={this.values.flaggedEmail() || app.translator.trans('issyrocks12-filter.admin.email.default_text')} oninput={m.withAttr('value', this.values.flaggedEmail)} />
+									</div>
+								]
+							})}
 						{Switch.component({
                 state: this.values.emailWhenFlagged(),
                 children: app.translator.trans('issyrocks12-filter.admin.input.switch'),
 								className: 'WordConfigPage-Settings-switch',
                 onchange: this.values.emailWhenFlagged
               })}
-
+									
             {Button.component({
               type: 'submit',
               className: 'Button Button--primary',

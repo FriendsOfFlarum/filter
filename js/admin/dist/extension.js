@@ -73,7 +73,7 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
 
             var settings = app.data.settings;
 
-            this.fields = ['Words', 'emailWhenFlagged'];
+            this.fields = ['Words', 'emailWhenFlagged', 'flaggedEmail', 'flaggedSubject'];
 
             this.values = {};
 
@@ -110,6 +110,31 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
                         app.translator.trans('issyrocks12-filter.admin.help')
                       ),
                       m("textarea", { className: "FormControl", placeholder: app.translator.trans('issyrocks12-filter.admin.input.placeholder'), rows: "6", value: this.values.Words() || null, oninput: m.withAttr('value', this.values.Words) })
+                    )]
+                  }),
+                  FieldSet.component({
+                    label: app.translator.trans('issyrocks12-filter.admin.input.email_label'),
+                    className: 'WordConfigPage-Settings',
+                    children: [m(
+                      "div",
+                      { className: "WordConfigPage-Settings-input" },
+                      m(
+                        "label",
+                        null,
+                        app.translator.trans('issyrocks12-filter.admin.input.email_subject')
+                      ),
+                      m("input", { className: "FormControl", value: this.values.flaggedSubject() || app.translator.trans('issyrocks12-filter.admin.email.default_subject'), oninput: m.withAttr('value', this.values.flaggedSubject) }),
+                      m(
+                        "label",
+                        null,
+                        app.translator.trans('issyrocks12-filter.admin.input.email_body')
+                      ),
+                      m(
+                        "div",
+                        { className: "helpText" },
+                        app.translator.trans('issyrocks12-filter.admin.email_help')
+                      ),
+                      m("textarea", { className: "FormControl", rows: "4", value: this.values.flaggedEmail() || app.translator.trans('issyrocks12-filter.admin.email.default_text'), oninput: m.withAttr('value', this.values.flaggedEmail) })
                     )]
                   }),
                   Switch.component({
