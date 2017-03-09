@@ -13,7 +13,7 @@ A [Flarum](http://flarum.org) extension that filters and flags posts by keywords
 ### Installation
 
 ```bash
-composer require issyrocks12/flarum-ext-users-list
+composer require issyrocks12/flarum-ext-filter
 ```
 
 ### To Do
