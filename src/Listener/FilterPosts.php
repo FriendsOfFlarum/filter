@@ -96,7 +96,7 @@ class FilterPosts
         $email = $post->user->email;
         $linebreaks = array("\n", "\r\n");
         $subject = $this->settings->get('flaggedSubject');
-        $text = str_replace($linebreaks, $post->user->username, $this->settings->get('flaggedEmail'));
+        $text = str_replace($linebreaks, "<br>", $this->settings->get('flaggedEmail'));
         $this->mailer->send('issyrocks12-filter::default', ['text' => $text], function (Message $message) use ($subject, $email) {
         $message->to($email);
         $message->subject($subject);
