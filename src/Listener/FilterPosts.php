@@ -62,7 +62,7 @@ class FilterPosts
         $content = $post->content;
         foreach ($words as $word)
         {
-           if (stripos($content, $word) !== false) 
+           if (stripos($content, $word) !== false || preg_match($word, $content)) 
            {
               $this->flagPost($post);
               if ($this->settings->get('emailWhenFlagged') == 1 && $post->emailed == 0)
@@ -93,6 +93,12 @@ class FilterPosts
   
    public function sendEmail($post)
    {
+        // Admin hasn't saved an email template to the database
+        if ($this->settings->get('flaggedSubject') == '' && $this->settings->get('flaggedEmail') == '')
+        {
+          $this->settings->set('flaggedSubject', $this->translator->trans('issyrocks12-filter.admin.email.default_subject'));
+          $this->settings->set('flaggedEmail', $this->translator->trans('issyrocks12-filter.admin.email.default_text'));
+        }
         $email = $post->user->email;
         $linebreaks = array("\n", "\r\n");
         $subject = $this->settings->get('flaggedSubject');
