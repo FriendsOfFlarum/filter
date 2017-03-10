@@ -2,6 +2,7 @@ issyrocks12-filter:
     forum:
         flagger_name: Auto Moderator
         flaged_text: Contained blocked strings
+        filtered_username: Please choose another username
     admin:
         title: Filter
         help: Input strings seperated by a comma and a space.
