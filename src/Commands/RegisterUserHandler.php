@@ -74,16 +74,7 @@ class RegisterUserHandler
         $username = array_get($data, 'attributes.username');
         $email = array_get($data, 'attributes.email');
         $password = array_get($data, 'attributes.password');
-      
-        $words = explode(', ', $this->settings->get('Words'));
-        
-        foreach ($words as $word)
-        {
-           if (stripos($username, $word) !== false || preg_match($word, $username)) 
-           {
-             $user = "Filtered";
-             return $user;
-           } else {
+
               if (isset($data['attributes']['token'])) {
                  $token = AuthToken::validOrFail($data['attributes']['token']);
                  $password = $password ?: str_random(20);
@@ -137,8 +128,6 @@ class RegisterUserHandler
               $this->dispatchEventsFor($user, $actor);
               return $user;
            }
-    }
-  }
     private function saveAvatarFromUrl(User $user, $url)
     {
         $tmpFile = tempnam($this->app->storagePath().'/tmp', 'avatar');

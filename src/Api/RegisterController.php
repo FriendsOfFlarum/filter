@@ -13,6 +13,7 @@ use Flarum\Api\Client;
 use Flarum\Http\Controller\ControllerInterface;
 use Flarum\Http\Rememberer;
 use Flarum\Http\SessionAuthenticator;
+use Flarum\Settings\SettingsRepositoryInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Zend\Diactoros\Response\JsonResponse;
 
@@ -23,6 +24,10 @@ class RegisterController implements ControllerInterface
      * @var Client
      */
     protected $api;
+    /**
+     * @var SettingsRepositoryInterface
+     */
+    protected $settings;
     /**
      * @var SessionAuthenticator
      */
@@ -36,9 +41,10 @@ class RegisterController implements ControllerInterface
      * @param SessionAuthenticator $authenticator
      * @param Rememberer $rememberer
      */
-    public function __construct(Client $api, SessionAuthenticator $authenticator, Rememberer $rememberer)
+    public function __construct(Client $api, SettingsRepositoryInterface $settings, SessionAuthenticator $authenticator, Rememberer $rememberer)
     {
         $this->api = $api;
+        $this->settings = $settings;
         $this->authenticator = $authenticator;
         $this->rememberer = $rememberer;
     }
@@ -47,27 +53,38 @@ class RegisterController implements ControllerInterface
      * @return JsonResponse
      */
     public function handle(Request $request)
-    {
+    {        
+        $body = ['data' => ['attributes' => $request->getParsedBody()]];
+        $username = array_get($body, 'attributes.username');
+        $words = explode(', ', $this->settings->get('Words'));
+        foreach ($words as $word)
+        {
+           if (stripos($username, $word) !== false || preg_match($word, $username)) {
+           $response = new JsonResponse([
+             'message' => "I'm a response!"
+           ], 418);
+           return $response;
+          
+        } else {
         $controller = 'issyrocks12\filter\Api\CreateUserController';
         $actor = $request->getAttribute('actor');
-        $body = ['data' => ['attributes' => $request->getParsedBody()]];
         
         $response = $this->api->send($controller, $actor, [], $body);
-    
-        $body = json_decode($response->getBody());
+      
+        $type = $response->getHeader('Content-Type');
+      
+      
+        $body = json_decode($response->getBody();
+        
       
         if (isset($body->data)) {
-          if ($body->data == "Filtered") 
-          {
-            $response = new JsonResponse($body->data, 580);
-            return $response;
-          } else {
             $userId = $body->data->id;
             $session = $request->getAttribute('session');
             $this->authenticator->logIn($session, $userId);
             $response = $this->rememberer->rememberUser($response, $userId);
             return $response;
-           } 
         }
-    }
+        }
+      }
+   }
 }

@@ -2,14 +2,19 @@ import { extend } from 'flarum/extend';
 import app from 'flarum/app';
 import SignUpModal from 'flarum/components/SignUpModal';
 import Alert from 'flarum/components/Alert';
+import extract from 'flarum/utils/extract';
 import extractText from 'flarum/utils/extractText';
 import LogInButtons from 'flarum/components/LogInButtons';
 import Button from 'flarum/components/Button';
+import patchMithril from 'flarum/utils/patchMithril';
 import SettingsPage from 'flarum/components/SettingsPage';
 import FieldSet from 'flarum/components/FieldSet';
+import Component from "flarum/Component";
+import saveSettings from "flarum/utils/saveSettings";
+import Switch from 'flarum/components/Switch';
 
 export default function () {
-  SignUpModal.prototype.body = function() {
+/**  SignUpModal.prototype.body = function() {
     return [
       this.props.token ? '' : <LogInButtons/>,
 
@@ -66,7 +71,7 @@ export default function () {
     }
     
     return data;
-  };
+  }; 
   SignUpModal.prototype.init = function() {
     this.username = m.prop(this.props.username || '');
 
@@ -74,16 +79,30 @@ export default function () {
 
     this.password = m.prop(this.props.password || '');
     
-  };
+  }; **/
   SignUpModal.prototype.onsubmit = function(e) {
-    e.preventDefault();
-
+    e.preventDefault(); 
+    
+    this.fiel = [
+      'Words'
+    ]
+    
+    this.val = {};
+			
+	  this.fiel.forEach(key => this.val[key] = m.prop(settings[key]));
+    
     this.loading = true;
 
     const data = this.submitData();
-
+    const Words = this.val.Words().split(', ');
+    Words.forEach(function(Word) {
+     if (data.username.includes(Word)) {
+       windows.alert(app.translator.trans('issyrocks12-filter.forum.filtered1') + Word + app.translator.trans('issyrocks12-filter.forum.filtered2'));
+       return;
+     } else {
+                 
     app.request({
-      url: app.forum.attribute('baseUrl') + '/api/issyrocks12/filter/register',
+      url: app.forum.attribute('baseUrl') + '/api/user',
       method: 'POST',
       data,
       errorHandler: this.onerror.bind(this)
@@ -91,11 +110,7 @@ export default function () {
       () => window.location.reload(),
       this.loaded.bind(this)
     );
-  };
-  SignUpModal.prototype.onerror = function(error) {
-    if (error.status === 580) {
-    window.alert("it worked!");
-      error.alert.props.children = app.translator.trans('issyrocks12-filter.forum.filtered_username');
-    }
-  }; 
+  }
+  });
+}
 }

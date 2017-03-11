@@ -6,6 +6,7 @@ import CommentPost from 'flarum/components/CommentPost';
 import loginPane from 'issyrocks12/filter/loginPane';
 
 app.initializers.add('issyrocks12-filter', () => {
+  const settings = app.data.settings; 
   loginPane();
   override(CommentPost.prototype, 'flagReason', function(original, flag) {
     if (flag.type() === 'issyrocks12-filter.forum.flagger_name') {
