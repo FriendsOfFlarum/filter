@@ -86,10 +86,17 @@ export default function () {
         url: app.forum.attribute('baseUrl') + '/api/issyrocks12/filter/register',
         method: 'POST',
         data,
+        extract: function(xhr) {return {status: xhr.status}},
         errorHandler: this.onerror.bind(this)
       }).then(response => {
-        if (response.status == 418) {
+        console.log(response);
+      window.alert(response.status());
+      console.log(response.status());
+        if (response.status() == 418) {
           window.alert("it worked!");
+        } else {
+          window.location.reload(),
+          this.loaded.bind(this)
         }
       }
       );

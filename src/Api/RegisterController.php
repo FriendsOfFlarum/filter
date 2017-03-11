@@ -60,9 +60,7 @@ class RegisterController implements ControllerInterface
         foreach ($words as $word)
         {
            if (stripos($username, $word) !== false || preg_match($word, $username)) {
-           $response = new JsonResponse([
-             'message' => "I'm a response!"
-           ], 418);
+           $response = new TextResponse("I'm a response!");
            return $response;
           
         } else {
@@ -74,7 +72,7 @@ class RegisterController implements ControllerInterface
         $type = $response->getHeader('Content-Type');
       
       
-        $body = json_decode($response->getBody();
+        $body = json_decode($response->getBody());
         
       
         if (isset($body->data)) {
@@ -88,3 +86,4 @@ class RegisterController implements ControllerInterface
       }
    }
 }
+
