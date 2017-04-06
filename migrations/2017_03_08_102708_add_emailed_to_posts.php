@@ -3,5 +3,5 @@
 use Flarum\Database\Migration;
 
 return Migration::addColumns('posts', [
-    'emailed' => ['boolean', 'default' => 0]
+    'emailed' => ['boolean', 'default' => 0],
 ]);
