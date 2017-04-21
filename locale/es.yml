@@ -13,6 +13,7 @@ issyrocks12-filter:
             email_label: Ajustes del Correo
             switch: 
               email: Enviar un correo de notificación al usuario cuando su post sea filtrado.
+              merge: Fusiona automáticamente comentarios dobles dentro de un post.
             email_subject: Título
             email_body: Mensaje
         nav:
