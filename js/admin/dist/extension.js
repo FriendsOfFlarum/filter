@@ -73,10 +73,12 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
 
             var settings = app.data.settings;
 
-            this.fields = ['Words', 'emailWhenFlagged', 'autoMergePosts', 'flaggedEmail', 'flaggedSubject'];
+            this.fields = ['Words', 'flaggedEmail', 'flaggedSubject'];
 
             this.values = {};
 
+            this.autoMergePosts = m.prop(settings.autoMergePosts === '1');
+            this.emailWhenFlagged = m.prop(settings.emailWhenFlagged === '1');
             this.fields.forEach(function (key) {
               return _this2.values[key] = m.prop(settings[key]);
             });
@@ -138,16 +140,16 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
                     )]
                   }),
                   Switch.component({
-                    state: this.values.autoMergePosts(),
+                    state: this.autoMergePosts(),
                     children: app.translator.trans('issyrocks12-filter.admin.input.switch.merge'),
                     className: 'WordConfigPage-Settings-switch',
-                    onchange: this.values.autoMergePosts
+                    onchange: this.autoMergePosts
                   }),
                   Switch.component({
-                    state: this.values.emailWhenFlagged(),
+                    state: this.emailWhenFlagged(),
                     children: app.translator.trans('issyrocks12-filter.admin.input.switch.email'),
                     className: 'WordConfigPage-Settings-switch',
-                    onchange: this.values.emailWhenFlagged
+                    onchange: this.emailWhenFlagged
                   }),
                   Button.component({
                     type: 'submit',
@@ -190,6 +192,11 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
             });
             // remove previous success popup
             app.alerts.dismiss(this.successAlert);
+
+            saveSettings({
+              emailWhenFlagged: this.emailWhenFlagged(),
+              autoMergePosts: this.autoMergePosts()
+            });
 
             saveSettings(settings).then(function () {
               // on success, show popup
