@@ -73,8 +73,7 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
 
             var settings = app.data.settings;
 
-            this.fields = ['Words', 'flaggedEmail', 'flaggedSubject'];
-            this.emailWhenFlagged = m.prop(settings.emailWhenFlagged === '1');
+            this.fields = ['Words', 'emailWhenFlagged', 'autoMergePosts', 'flaggedEmail', 'flaggedSubject'];
 
             this.values = {};
 
@@ -139,25 +138,41 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
                     )]
                   }),
                   Switch.component({
-                    state: this.emailWhenFlagged(),
-                    children: app.translator.trans('issyrocks12-filter.admin.input.switch'),
+                    state: this.values.autoMergePosts(),
+                    children: app.translator.trans('issyrocks12-filter.admin.input.switch.merge'),
                     className: 'WordConfigPage-Settings-switch',
-                    onchange: this.emailWhenFlagged
+                    onchange: this.values.autoMergePosts
+                  }),
+                  Switch.component({
+                    state: this.values.emailWhenFlagged(),
+                    children: app.translator.trans('issyrocks12-filter.admin.input.switch.email'),
+                    className: 'WordConfigPage-Settings-switch',
+                    onchange: this.values.emailWhenFlagged
                   }),
                   Button.component({
                     type: 'submit',
                     className: 'Button Button--primary',
                     children: app.translator.trans('core.admin.email.submit_button'),
-                    loading: this.loading
+                    loading: this.loading,
+                    disabled: !this.changed()
                   })
                 )
               )
             );
           }
         }, {
+          key: "changed",
+          value: function changed() {
+            var _this3 = this;
+
+            return this.fields.some(function (key) {
+              return _this3.values[key]() !== app.data.settings[key];
+            });
+          }
+        }, {
           key: "onsubmit",
           value: function onsubmit(e) {
-            var _this3 = this;
+            var _this4 = this;
 
             // prevent the usual form submit behaviour
             e.preventDefault();
@@ -171,24 +186,20 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
             var settings = {};
 
             this.fields.forEach(function (key) {
-              return settings[key] = _this3.values[key]();
+              return settings[key] = _this4.values[key]();
             });
             // remove previous success popup
             app.alerts.dismiss(this.successAlert);
 
-            saveSettings({
-              emailWhenFlagged: this.emailWhenFlagged()
-            });
-
             saveSettings(settings).then(function () {
               // on success, show popup
-              app.alerts.show(_this3.successAlert = new Alert({
+              app.alerts.show(_this4.successAlert = new Alert({
                 type: 'success',
                 children: app.translator.trans('core.admin.basics.saved_message')
               }));
             }).catch(function () {}).then(function () {
               // return to the initial state and redraw the page
-              _this3.loading = false;
+              _this4.loading = false;
               m.redraw();
             });
           }

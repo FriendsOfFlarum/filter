@@ -12,10 +12,11 @@ export default class WordConfigPage extends Component {
 			
     this.fields = [
       'Words',
+			'emailWhenFlagged',
+			'autoMergePosts',
 			'flaggedEmail',
 			'flaggedSubject'
-    ];
-	this.emailWhenFlagged = m.prop(settings.emailWhenFlagged === '1');
+    ]
 			
 	this.values = {};
 			
@@ -55,18 +56,25 @@ export default class WordConfigPage extends Component {
 									</div>
 								]
 							})}
-						{Switch.component({
-                state: this.emailWhenFlagged(),
-                children: app.translator.trans('issyrocks12-filter.admin.input.switch'),
+							{Switch.component({
+                state: this.values.autoMergePosts(),
+                children: app.translator.trans('issyrocks12-filter.admin.input.switch.merge'),
 								className: 'WordConfigPage-Settings-switch',
-                onchange: this.emailWhenFlagged
+                onchange: this.values.autoMergePosts
+              })}
+						{Switch.component({
+                state: this.values.emailWhenFlagged(),
+                children: app.translator.trans('issyrocks12-filter.admin.input.switch.email'),
+								className: 'WordConfigPage-Settings-switch',
+                onchange: this.values.emailWhenFlagged
               })}
 									
             {Button.component({
               type: 'submit',
               className: 'Button Button--primary',
               children: app.translator.trans('core.admin.email.submit_button'),
-              loading: this.loading
+              loading: this.loading,
+              disabled: !this.changed()
             })}
           </form>
         </div>
@@ -75,6 +83,14 @@ export default class WordConfigPage extends Component {
   }
 
 
+    /**
+     * Saves the settings to the database and redraw the page
+     *
+     * @param e
+     */
+	  changed() {
+    	return this.fields.some(key => this.values[key]() !== app.data.settings[key]);
+  	}
     onsubmit(e)
 					{
         // prevent the usual form submit behaviour
@@ -92,12 +108,8 @@ export default class WordConfigPage extends Component {
 				this.fields.forEach(key => settings[key] = this.values[key]());
         // remove previous success popup
         app.alerts.dismiss(this.successAlert);
-	
-        saveSettings({
-					emailWhenFlagged: this.emailWhenFlagged()
-				});
-						
-				saveSettings(settings)
+
+        saveSettings(settings)
             .then(() => {
                 // on success, show popup
                 app.alerts.show(this.successAlert = new Alert({

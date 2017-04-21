@@ -11,7 +11,8 @@ issyrocks12-filter:
             placeholder: Palabras o frases que serán filtradas.
             filter_title: Palabras o frases a filtrar.
             email_label: Ajustes del Correo
-            switch: Enviar un correo de notificación al usuario cuando su post sea filtrado.
+            switch: 
+              email: Enviar un correo de notificación al usuario cuando su post sea filtrado.
             email_subject: Título
             email_body: Mensaje
         nav:

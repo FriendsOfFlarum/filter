@@ -5,8 +5,12 @@ namespace issyrocks12\filter\Listener;
 use DirectoryIterator;
 use Flarum\Event\ConfigureLocales;
 use Flarum\Event\PostWillBeSaved;
+use Flarum\Event\PostWasPosted;
 use Flarum\Flags\Flag;
+use Flarum\Core\Post;
 use Flarum\Foundation\Application;
+use Flarum\Core\Post\CommentPost;
+use Flarum\Core\Repository\PostRepository;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Mail\Mailer;
@@ -31,19 +35,24 @@ class FilterPosts
      * @var TranslatorInterface
      */
     protected $translator;
-
+    /**
+     * @var PostRepository
+     */
+    protected $posts;  
     /**
      * @param SettingsRepositoryInterface $settings
      * @param Application                 $app
      * @param TranslatorInterface         $translator
      * @param Mailer                      $mailer
+     * @param PostRepository              $posts
      */
-    public function __construct(SettingsRepositoryInterface $settings, Mailer $mailer, Application $app, TranslatorInterface $translator)
+    public function __construct(SettingsRepositoryInterface $settings, Mailer $mailer, Application $app, TranslatorInterface $translator, PostRepository $posts)
     {
         $this->settings = $settings;
         $this->app = $app;
         $this->mailer = $mailer;
         $this->translator = $translator;
+        $this->posts = $posts;
     }
 
     /**
@@ -52,6 +61,7 @@ class FilterPosts
     public function subscribe(Dispatcher $events)
     {
         $events->listen(PostWillBeSaved::class, [$this, 'checkPost']);
+        $events->listen(PostWasPosted::class, [$this, 'mergePost']);
         $events->listen(ConfigureLocales::class, [$this, 'configLocales']);
     }
 
@@ -59,6 +69,7 @@ class FilterPosts
      * @param PostWillBeSaved $event
      */
     public function checkPost(PostWillBeSaved $event)
+      
     {
         $words = explode(', ', $this->settings->get('Words'));
         $post = $event->post;
@@ -70,6 +81,32 @@ class FilterPosts
                     $this->sendEmail($post);
                 }
                 break;
+            }
+        }
+    }
+
+    public function mergePost(PostWasPosted $event)
+    { 
+      $post = $event->post;
+      
+      if ($post instanceof CommentPost && $post->number !== 1 && $this->settings->get('autoMergePosts') == 1) {
+               
+            $oldPost = $this->posts->query()
+              ->where('discussion_id', '=', $post->discussion_id)
+              ->where('number', '<', $post->number)
+              ->where('hide_time', '=', null)
+              ->orderBy('number', 'desc')
+              ->firstOrFail();
+        
+            if ($oldPost->user_id == $post->user_id) {
+                $oldPost->revise($oldPost->content.'
+                
+'.$post->content, $post->user);
+              
+                $oldPost->save();
+
+                $post->hide();
+                $post->save();
             }
         }
     }
