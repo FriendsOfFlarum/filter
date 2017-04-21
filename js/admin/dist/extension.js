@@ -155,26 +155,16 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
                     type: 'submit',
                     className: 'Button Button--primary',
                     children: app.translator.trans('core.admin.email.submit_button'),
-                    loading: this.loading,
-                    disabled: !this.changed()
+                    loading: this.loading
                   })
                 )
               )
             );
           }
         }, {
-          key: "changed",
-          value: function changed() {
-            var _this3 = this;
-
-            return this.fields.some(function (key) {
-              return _this3.values[key]() !== app.data.settings[key];
-            });
-          }
-        }, {
           key: "onsubmit",
           value: function onsubmit(e) {
-            var _this4 = this;
+            var _this3 = this;
 
             // prevent the usual form submit behaviour
             e.preventDefault();
@@ -188,7 +178,7 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
             var settings = {};
 
             this.fields.forEach(function (key) {
-              return settings[key] = _this4.values[key]();
+              return settings[key] = _this3.values[key]();
             });
             // remove previous success popup
             app.alerts.dismiss(this.successAlert);
@@ -200,13 +190,13 @@ System.register("issyrocks12/filter/components/WordConfigPage", ["flarum/Compone
 
             saveSettings(settings).then(function () {
               // on success, show popup
-              app.alerts.show(_this4.successAlert = new Alert({
+              app.alerts.show(_this3.successAlert = new Alert({
                 type: 'success',
                 children: app.translator.trans('core.admin.basics.saved_message')
               }));
             }).catch(function () {}).then(function () {
               // return to the initial state and redraw the page
-              _this4.loading = false;
+              _this3.loading = false;
               m.redraw();
             });
           }

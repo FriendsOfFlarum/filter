@@ -73,8 +73,7 @@ export default class WordConfigPage extends Component {
               type: 'submit',
               className: 'Button Button--primary',
               children: app.translator.trans('core.admin.email.submit_button'),
-              loading: this.loading,
-              disabled: !this.changed()
+              loading: this.loading
             })}
           </form>
         </div>
@@ -82,15 +81,6 @@ export default class WordConfigPage extends Component {
     );
   }
 
-
-    /**
-     * Saves the settings to the database and redraw the page
-     *
-     * @param e
-     */
-	  changed() {
-    	return this.fields.some(key => this.values[key]() !== app.data.settings[key]);
-  	}
     onsubmit(e)
 					{
         // prevent the usual form submit behaviour
