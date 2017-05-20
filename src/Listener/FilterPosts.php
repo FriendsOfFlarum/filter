@@ -74,7 +74,7 @@ class FilterPosts
         $post = $event->post;
         $content = $post->content;
         foreach ($words as $word) {
-            if (stripos($content, $word) !== false)) {
+            if (stripos($content, $word) !== false) {
                 $this->flagPost($post);
                 if ($this->settings->get('emailWhenFlagged') == 1 && $post->emailed == 0) {
                     $this->sendEmail($post);
