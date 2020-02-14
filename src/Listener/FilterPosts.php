@@ -1,13 +1,11 @@
 <?php
 /**
- *
  *  This file is part of fof/filter.
  *
  *  Copyright (c) 2020 FriendsOfFlarum..
  *
  *  For the full copyright and license information, please view the license.md
  *  file that was distributed with this source code.
- *
  */
 
 namespace FoF\Filter\Listener;
@@ -49,10 +47,10 @@ class FilterPosts
 
     /**
      * @param SettingsRepositoryInterface $settings
-     * @param Application $app
-     * @param TranslatorInterface $translator
-     * @param Mailer $mailer
-     * @param PostRepository $posts
+     * @param Application                 $app
+     * @param TranslatorInterface         $translator
+     * @param Mailer                      $mailer
+     * @param PostRepository              $posts
      */
     public function __construct(
         SettingsRepositoryInterface $settings,
@@ -84,7 +82,9 @@ class FilterPosts
     {
         $post = $event->post;
 
-        if ($post->auto_mod) return;
+        if ($post->auto_mod) {
+            return;
+        }
 
         if ($this->checkContent($post->content)) {
             $this->flagPost($post);
@@ -98,7 +98,7 @@ class FilterPosts
     {
         $post = $event->post;
 
-        if ($post instanceof CommentPost && $post->number !== 1 && !$post->auto_mod && $this->settings->get('fof-filter.autoMergePosts') === "1") {
+        if ($post instanceof CommentPost && $post->number !== 1 && !$post->auto_mod && $this->settings->get('fof-filter.autoMergePosts') === '1') {
             $oldPost = $this->posts->query()
                 ->where('discussion_id', '=', $post->discussion_id)
                 ->where('number', '<', $post->number)
@@ -106,12 +106,12 @@ class FilterPosts
                 ->orderBy('number', 'desc')
                 ->firstOrFail();
 
-            $cooldown = $this->settings->get('fof-filter.cooldown') || "15";
+            $cooldown = $this->settings->get('fof-filter.cooldown') || '15';
 
             if ($oldPost->user_id == $post->user_id && strtotime($oldPost) < strtotime("-$cooldown minutes")) {
-                $oldPost->revise($oldPost->content . '
+                $oldPost->revise($oldPost->content.'
                 
-' . $post->content, $post->user);
+'.$post->content, $post->user);
 
                 $oldPost->save();
 
