@@ -1,18 +1,21 @@
-issyrocks12-filter:
+fof-filter:
     forum:
         flagger_name: Auto Moderator
         flaged_text: Contained blocked strings
     admin:
         title: Filter
         help: Input strings seperated by a comma and a space.
+        help2: Cooldown in minutes, where a double post will be merged
         email_help: Body of flagged email. Accepts html or plaintext.
         filter_label: Strings to filter
+        countLabel: Censor Tolorance
+        cooldownLabel: Merge Post Cooldown
         input:
             placeholder: Strings to be filtered
             filter_title: Strings to filter
             email_label: Email Settings
             switch: 
-              email: Email user when post is filter
+              email: Email user when post is filtered
               merge: Auto merge double posts
             email_subject: Subject
             email_body: Body

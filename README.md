@@ -1,6 +1,8 @@
-# Filter
+# Filter by FriendsOfFlarum
 
-A [Flarum](http://flarum.org) extension that filters and flags posts by keywords
+![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/fof/filter.svg)](https://packagist.org/packages/fof/filter)
+
+A [Flarum](http://flarum.org) extension that filters and flags posts by keywords, with the ability to auto-merge double posts.
 
 ### Goals
 
@@ -12,27 +14,15 @@ A [Flarum](http://flarum.org) extension that filters and flags posts by keywords
 
 ### Installation
 
+Use [Bazaar](https://discuss.flarum.org/d/5151-flagrow-bazaar-the-extension-marketplace) or install manually with composer:
+
 ```bash
-composer require issyrocks12/flarum-ext-filter
+composer require fof/filter
 ```
-
-### To Do
-
-- Add regex support (in progress)
-- Ability to change flagger name, and fix (to do)
-- Add a notification to the user's notifications (to do)
-- Requests?
-
-### Issues
-
-- Flagger_name doesn't work
-
-## End-user usage
-
-Input the strings, posts will be filtered as they are posted. They will be flagged and unapproved. An email will be send to the poster if the setting is on.
 
 ### Links
 
-- [on github](https://github.com/issyrocks12/flarum-ext-filter)
-- [on packagist](https://packagist.org/packages/issyrocks12/flarum-ext-filter)
-- [issues](https://github.com/issyrocks12/flarum-ext-filter/issues)
+- [on github](https://github.com/friendsofflarum/filter)
+- [on packagist](https://packagist.org/packages/fof/filter)
+
+An extension by [FriendsOfFlarum](https://github.com/FriendsOfFlarum).

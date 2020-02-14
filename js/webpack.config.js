@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  *
  *  This file is part of fof/filter.
  *
@@ -10,8 +9,4 @@
  *
  */
 
-use Flarum\Database\Migration;
-
-return Migration::addColumns('posts', [
-    'emailed' => ['boolean', 'default' => 0],
-]);
+module.exports = require('flarum-webpack-config')();

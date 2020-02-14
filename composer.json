@@ -1,5 +1,5 @@
 {
-    "name": "issyrocks12/flarum-ext-filter",
+    "name": "fof/filter",
     "description": "Filter out words and phrases from forum posts",
     "type": "flarum-extension",
     "keywords": ["moderation"],
@@ -7,34 +7,34 @@
     "authors": [
         {
             "name": "Charlie K",
-            "email": "charlie@jailbreakhub.org"
+            "email": "charlie.k@redevs.org"
         }
     ],
     "support": {
-        "issues": "https://github.com/issyrocks12/flarum-ext-filter/issues",
-        "source": "https://github.com/issyrocks12/flarum-ext-filter"
+        "issues": "https://github.com/friendsofflarum/filter/issues",
+        "source": "https://github.com/friendsofflarum/filter"
     },
     "require": {
-        "flarum/core": "^0.1.0-beta.6",
-        "flarum/flarum-ext-approval": "^0.1.0-beta.6",
-        "flarum/flarum-ext-flags": "^v0.1.0-beta.6"
+        "flarum/core": "^0.1.0-beta.8",
+        "flarum/approval": "^0.1.0-beta.8",
+        "flarum/flags": "^v0.1.0-beta.8"
     },
     "autoload": {
         "psr-4": {
-            "issyrocks12\\filter\\": "src/"
+            "FoF\\Filter\\": "src/"
         }
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "0.1.x-dev"
-        },
         "flarum-extension": {
-            "title": "Filter",
+            "title": "FoF Filter",
             "icon": {
-                "name": "filter",
-                "backgroundColor": "#263238",
+                "name": "fas fa-filter",
+                "backgroundColor": "#e74c3c",
                 "color": "#fff"
             }
+        },
+        "flagrow": {
+            "discuss": ""
         }
     }
 }
