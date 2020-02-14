@@ -1,13 +1,11 @@
 <?php
 /**
- *
  *  This file is part of fof/filter.
  *
  *  Copyright (c) 2020 FriendsOfFlarum..
  *
  *  For the full copyright and license information, please view the license.md
  *  file that was distributed with this source code.
- *
  */
 
 namespace FoF\Filter\Listener;
@@ -25,8 +23,7 @@ class AddCensorChecks
     public function addCensors(Saving $event)
     {
         if ($badwords = explode(', ', $event->settings['fof-filter.words'])) {
-
-            $leet_replace = array();
+            $leet_replace = [];
             $leet_replace['a'] = '(a|a\.|a\-|4|@|Á|á|À|Â|à|Â|â|Ä|ä|Ã|ã|Å|å|α|Δ|Λ|λ)';
             $leet_replace['b'] = '(b|b\.|b\-|8|\|3|ß|Β|β)';
             $leet_replace['c'] = '(c|c\.|c\-|Ç|ç|¢|€|<|\(|{|©)';
@@ -54,9 +51,9 @@ class AddCensorChecks
             $leet_replace['y'] = '(y|y\.|y\-|¥|γ|ÿ|ý|Ÿ|Ý)';
             $leet_replace['z'] = '(z|z\.|z\-|Ζ)';
 
-            $censorChecks = array();
+            $censorChecks = [];
             for ($x = 0, $xMax = count($badwords); $x < $xMax; $x++) {
-                $censorChecks[$x] = '/' . str_ireplace(array_keys($leet_replace), array_values($leet_replace), $badwords[$x]) . '/i';
+                $censorChecks[$x] = '/'.str_ireplace(array_keys($leet_replace), array_values($leet_replace), $badwords[$x]).'/i';
             }
 
             $event->settings['fof-filter.censors'] = json_encode($censorChecks);
