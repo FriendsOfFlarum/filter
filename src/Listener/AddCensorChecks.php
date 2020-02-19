@@ -22,7 +22,7 @@ class AddCensorChecks
 
     public function addCensors(Saving $event)
     {
-        if ($badwords = explode(', ', $event->settings['fof-filter.words'])) {
+        if (isset($event->settings['fof-filter.words']) && $badwords = explode(', ', $event->settings['fof-filter.words'])) {
             $leet_replace = [];
             $leet_replace['a'] = '(a|a\.|a\-|4|@|Á|á|À|Â|à|Â|â|Ä|ä|Ã|ã|Å|å|α|Δ|Λ|λ)';
             $leet_replace['b'] = '(b|b\.|b\-|8|\|3|ß|Β|β)';
