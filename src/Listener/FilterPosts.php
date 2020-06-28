@@ -106,9 +106,9 @@ class FilterPosts
                 ->orderBy('number', 'desc')
                 ->firstOrFail();
 
-            $cooldown = $this->settings->get('fof-filter.cooldown') || '15';
+            $cooldown = $this->settings->get('fof-filter.cooldown') ?? '15';
 
-            if ($oldPost->user_id == $post->user_id && strtotime($oldPost) < strtotime("-$cooldown minutes")) {
+            if ($oldPost->user_id == $post->user_id && strtotime("-$cooldown minutes") < strtotime($oldPost->created_at)) {
                 $oldPost->revise($oldPost->content.'
                 
 '.$post->content, $post->user);
@@ -123,7 +123,10 @@ class FilterPosts
     public function checkContent($postContent)
     {
         $censors = json_decode($this->settings->get('fof-filter.censors'), true);
-
+        if (empty($censors)) {
+            return false;
+        }
+        
         $isExplicit = false;
 
         preg_replace_callback(
