@@ -15,12 +15,7 @@ use Illuminate\Contracts\Events\Dispatcher;
 
 class AddCensorChecks
 {
-    public function subscribe(Dispatcher $events)
-    {
-        $events->listen(Saving::class, [$this, 'addCensors']);
-    }
-
-    public function addCensors(Saving $event)
+    public function handle(Saving $event)
     {
         if (isset($event->settings['fof-filter.words']) && $badwords = explode(', ', $event->settings['fof-filter.words'])) {
             $leet_replace = [];

@@ -11,74 +11,37 @@
 namespace FoF\Filter\Listener;
 
 use Flarum\Flags\Flag;
-use Flarum\Foundation\Application;
-use Flarum\Post\CommentPost;
-use Flarum\Post\Event\Posted;
 use Flarum\Post\Event\Saving;
-use Flarum\Post\PostRepository;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Mail\Mailer;
 use Illuminate\Mail\Message;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class FilterPosts
+class CheckPost
 {
     /**
      * @var SettingsRepositoryInterface
      */
     protected $settings;
-    /**
-     * @var Application
-     */
-    protected $app;
-    /**
-     * @var Mailer
-     */
-    protected $mailer;
+
     /**
      * @var TranslatorInterface
      */
     protected $translator;
-    /**
-     * @var PostRepository
-     */
-    protected $posts;
 
     /**
-     * @param SettingsRepositoryInterface $settings
-     * @param Application                 $app
-     * @param TranslatorInterface         $translator
-     * @param Mailer                      $mailer
-     * @param PostRepository              $posts
+     * @var Mailer
      */
-    public function __construct(
-        SettingsRepositoryInterface $settings,
-        Mailer $mailer,
-        Application $app,
-        TranslatorInterface $translator,
-        PostRepository $posts
-    ) {
-        $this->settings = $settings;
-        $this->app = $app;
-        $this->mailer = $mailer;
-        $this->translator = $translator;
-        $this->posts = $posts;
-    }
+    protected $mailer;
 
-    /**
-     * @param Dispatcher $events
-     */
-    public function subscribe(Dispatcher $events)
+    public function __construct(SettingsRepositoryInterface $settings, TranslatorInterface $translator, Mailer $mailer)
     {
-        $events->listen(Saving::class, [$this, 'checkPost']);
-        $events->listen(Posted::class, [$this, 'mergePost']);
+        $this->settings = $settings;
+        $this->translator = $translator;
+        $this->mailer = $mailer;
     }
-
-    /**
-     * @param Saving $event
-     */
-    public function checkPost(Saving $event)
+    
+    public function handle(Saving $event)
     {
         $post = $event->post;
 
@@ -94,33 +57,7 @@ class FilterPosts
         }
     }
 
-    public function mergePost(Posted $event)
-    {
-        $post = $event->post;
-
-        if ($post instanceof CommentPost && $post->number !== 1 && !$post->auto_mod && $this->settings->get('fof-filter.autoMergePosts') === '1') {
-            $oldPost = $this->posts->query()
-                ->where('discussion_id', '=', $post->discussion_id)
-                ->where('number', '<', $post->number)
-                ->where('hidden_at', '=', null)
-                ->orderBy('number', 'desc')
-                ->firstOrFail();
-
-            $cooldown = $this->settings->get('fof-filter.cooldown') || '15';
-
-            if ($oldPost->user_id == $post->user_id && strtotime($oldPost) < strtotime("-$cooldown minutes")) {
-                $oldPost->revise($oldPost->content.'
-                
-'.$post->content, $post->user);
-
-                $oldPost->save();
-
-                $post->delete();
-            }
-        }
-    }
-
-    public function checkContent($postContent)
+    public function checkContent($postContent): bool
     {
         $censors = json_decode($this->settings->get('fof-filter.censors'), true);
 
@@ -139,7 +76,7 @@ class FilterPosts
         return $isExplicit;
     }
 
-    public function flagPost($post)
+    public function flagPost($post): void
     {
         $post->is_approved = false;
         $post->auto_mod = true;
@@ -157,7 +94,7 @@ class FilterPosts
         });
     }
 
-    public function sendEmail($post)
+    public function sendEmail($post): void
     {
         // Admin hasn't saved an email template to the database
         if ($this->settings->get('flaggedSubject') == '' && $this->settings->get('flaggedEmail') == '') {
