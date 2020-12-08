@@ -40,7 +40,7 @@ class CheckPost
         $this->translator = $translator;
         $this->mailer = $mailer;
     }
-    
+
     public function handle(Saving $event)
     {
         $post = $event->post;
@@ -98,20 +98,27 @@ class CheckPost
     {
         // Admin hasn't saved an email template to the database
         if ($this->settings->get('flaggedSubject') == '' && $this->settings->get('flaggedEmail') == '') {
-            $this->settings->set('flaggedSubject',
-                $this->translator->trans('fof-filter.admin.email.default_subject'));
-            $this->settings->set('flaggedEmail',
-                $this->translator->trans('fof-filter.admin.email.default_text'));
+            $this->settings->set(
+                'flaggedSubject',
+                $this->translator->trans('fof-filter.admin.email.default_subject')
+            );
+            $this->settings->set(
+                'flaggedEmail',
+                $this->translator->trans('fof-filter.admin.email.default_text')
+            );
         }
         $email = $post->user->email;
         $linebreaks = ["\n", "\r\n"];
         $subject = $this->settings->get('flaggedSubject');
         $text = str_replace($linebreaks, $post->user->username, $this->settings->get('flaggedEmail'));
-        $this->mailer->send('fof-filter::default', ['text' => $text],
+        $this->mailer->send(
+            'fof-filter::default',
+            ['text' => $text],
             function (Message $message) use ($subject, $email) {
                 $message->to($email);
                 $message->subject($subject);
-            });
+            }
+        );
         $post->emailed = true;
     }
 }

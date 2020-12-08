@@ -11,7 +11,6 @@
 namespace FoF\Filter\Listener;
 
 use Flarum\Settings\Event\Saving;
-use Illuminate\Contracts\Events\Dispatcher;
 
 class AddCensorChecks
 {
