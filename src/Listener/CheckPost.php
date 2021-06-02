@@ -59,7 +59,7 @@ class CheckPost
         if ($post->auto_mod) {
             return;
         }
-        
+
         if ($this->checkContent($post->content)) {
             $this->flagPost($post);
 
