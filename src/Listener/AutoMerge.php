@@ -50,7 +50,7 @@ class AutoMerge
                 ->orderBy('number', 'desc')
                 ->firstOrFail();
 
-            if(!$oldPost instanceof CommentPost){
+            if(!$oldPost instanceof CommentPost) {
                 return;
             }
 
