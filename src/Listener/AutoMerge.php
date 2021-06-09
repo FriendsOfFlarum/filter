@@ -51,7 +51,7 @@ class AutoMerge
                 ->firstOrFail();
 
             if(!$oldPost instanceof CommentPost){
-                return ;
+                return;
             }
 
             $cooldown = $this->settings->get('fof-filter.cooldown') ?? '15';
