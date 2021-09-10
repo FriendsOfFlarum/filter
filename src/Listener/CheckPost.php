@@ -56,7 +56,7 @@ class CheckPost
     {
         $post = $event->post;
 
-        if ($post->auto_mod) {
+        if ($post->auto_mod || $event->actor->can('bypassFoFFilter', $post->discussion)) {
             return;
         }
 

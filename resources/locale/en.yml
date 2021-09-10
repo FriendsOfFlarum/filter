@@ -22,6 +22,8 @@ fof-filter:
         nav:
             text: Filter
             desc: Filter posts by words
+        permission:
+            bypass_filter_label: Bypass word filter(s)
         email:
             default_subject: Regarding Your Recent Post
             default_text: |

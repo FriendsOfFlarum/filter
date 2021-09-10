@@ -13,5 +13,15 @@ import app from 'flarum/admin/app';
 import WordConfigPage from './components/WordConfigPage';
 
 app.initializers.add('fof-filter', (app) => {
-    app.extensionData.for('fof-filter').registerPage(WordConfigPage);
+    app.extensionData
+        .for('fof-filter')
+        .registerPage(WordConfigPage)
+        .registerPermission(
+            {
+                icon: 'fas fa-user-ninja',
+                label: app.translator.trans('fof-filter.admin.permission.bypass_filter_label'),
+                permission: 'discussion.bypassFoFFilter',
+            },
+            'reply'
+        );
 });
