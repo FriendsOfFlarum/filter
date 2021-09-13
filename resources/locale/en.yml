@@ -4,7 +4,7 @@ fof-filter:
         flag_message: Contained blocked strings
     admin:
         title: Filter
-        help: Input text or words to filter, separated by comma + space. If the content of a user’s post contains a string you want to filter, it will be flagged for approval. Resistant against 133t.
+        bad_words_help: Input text or words to filter, one per line. If the content of a user’s post contains a string you want to filter, it will be flagged for approval. Resistant against 133t.
         help2: Interval in minutes in which posts from the same user in the same discussion will be automatically merged.
         email_help: Body of flagged email. Accepts html or plaintext.
         filter_label: Strings to filter

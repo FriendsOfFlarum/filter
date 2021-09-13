@@ -16,7 +16,7 @@ export default class FilterSettingsPage extends ExtensionPage {
                         <h2>{app.translator.trans('fof-filter.admin.title')}</h2>
                         <div className="Form-group">
                             <label>{app.translator.trans('fof-filter.admin.filter_label')}</label>
-                            <div className="helpText">{app.translator.trans('fof-filter.admin.help')}</div>
+                            <div className="helpText">{app.translator.trans('fof-filter.admin.bad_words_help')}</div>
                             <textarea
                                 className="FormControl"
                                 bidi={this.setting('fof-filter.words')}
