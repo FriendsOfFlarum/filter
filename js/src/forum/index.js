@@ -15,15 +15,15 @@ import app from 'flarum/forum/app';
 import CommentPost from 'flarum/forum/components/CommentPost';
 
 app.initializers.add(
-    'fof-filter',
-    () => {
-        override(CommentPost.prototype, 'flagReason', function (original, flag) {
-            if (flag.type() === 'autoMod') {
-                const detail = flag.reasonDetail();
-                return [app.translator.trans('fof-filter.forum.flagger_name'), detail ? <span className="Post-flagged-detail">{detail}</span> : ''];
-            }
-            return original(flag);
-        });
-    },
-    -20
+  'fof-filter',
+  () => {
+    override(CommentPost.prototype, 'flagReason', function (original, flag) {
+      if (flag.type() === 'autoMod') {
+        const detail = flag.reasonDetail();
+        return [app.translator.trans('fof-filter.forum.flagger_name'), detail ? <span className="Post-flagged-detail">{detail}</span> : ''];
+      }
+      return original(flag);
+    });
+  },
+  -20
 );
