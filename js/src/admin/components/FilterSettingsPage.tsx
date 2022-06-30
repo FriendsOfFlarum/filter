@@ -5,8 +5,6 @@ import type Mithril from 'mithril';
 export default class FilterSettingsPage extends ExtensionPage {
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
-
-    this.setting = this.setting.bind(this);
   }
 
   content() {
