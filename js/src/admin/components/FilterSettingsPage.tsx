@@ -1,11 +1,10 @@
 import app from 'flarum/admin/app';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
+import type Mithril from 'mithril';
 
 export default class FilterSettingsPage extends ExtensionPage {
-  oninit(vnode) {
+  oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
-
-    this.setting = this.setting.bind(this);
   }
 
   content() {
@@ -14,16 +13,14 @@ export default class FilterSettingsPage extends ExtensionPage {
         <div className="container">
           <form>
             <h2>{app.translator.trans('fof-filter.admin.title')}</h2>
-            <div className="Form-group">
-              <label>{app.translator.trans('fof-filter.admin.filter_label')}</label>
-              <div className="helpText">{app.translator.trans('fof-filter.admin.bad_words_help')}</div>
-              <textarea
-                className="FormControl"
-                bidi={this.setting('fof-filter.words')}
-                placeholder={app.translator.trans('fof-filter.admin.input.placeholder')}
-                rows="6"
-              />
-            </div>
+            {this.buildSettingComponent({
+              type: 'textarea',
+              rows: 6,
+              setting: 'fof-filter.words',
+              label: app.translator.trans('fof-filter.admin.filter_label'),
+              placeholder: app.translator.trans('fof-filter.admin.input.placeholder'),
+              help: app.translator.trans('fof-filter.admin.bad_words_help'),
+            })}
             <hr />
             <h2>{app.translator.trans('fof-filter.admin.auto_merge_title')}</h2>
             {this.buildSettingComponent({
@@ -46,23 +43,20 @@ export default class FilterSettingsPage extends ExtensionPage {
               label: app.translator.trans('fof-filter.admin.input.email_subject'),
               placeholder: app.translator.trans('fof-filter.admin.email.default_subject'),
             })}
-            <div className="Form-group">
-              <label>{app.translator.trans('fof-filter.admin.input.email_body')}</label>
-              <div className="helpText">{app.translator.trans('fof-filter.admin.email_help')}</div>
-              <textarea
-                className="FormControl"
-                bidi={this.setting('fof-filter.flaggedEmail')}
-                placeholder={app.translator.trans('fof-filter.admin.email.default_text')}
-                rows="4"
-              />
-            </div>
+            {this.buildSettingComponent({
+              type: 'textarea',
+              rows: 4,
+              setting: 'fof-filter.flaggedEmail',
+              label: app.translator.trans('fof-filter.admin.input.email_body'),
+              help: app.translator.trans('fof-filter.admin.email_help'),
+              placeholder: app.translator.trans('fof-filter.admin.email.default_text'),
+            })}
             {this.buildSettingComponent({
               type: 'boolean',
               setting: 'fof-filter.emailWhenFlagged',
               label: app.translator.trans('fof-filter.admin.input.switch.email'),
             })}
             <hr />
-
             {this.submitButton()}
           </form>
         </div>
