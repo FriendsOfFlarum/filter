@@ -19,7 +19,7 @@ export default class FilterSettingsPage extends ExtensionPage {
               setting: 'fof-filter.words',
               label: app.translator.trans('fof-filter.admin.filter_label'),
               placeholder: app.translator.trans('fof-filter.admin.input.placeholder'),
-              help: app.translator.trans('fof-filter.admin.bad_words_help')
+              help: app.translator.trans('fof-filter.admin.bad_words_help'),
             })}
             <hr />
             <h2>{app.translator.trans('fof-filter.admin.auto_merge_title')}</h2>
@@ -49,7 +49,7 @@ export default class FilterSettingsPage extends ExtensionPage {
               setting: 'fof-filter.flaggedEmail',
               label: app.translator.trans('fof-filter.admin.input.email_body'),
               help: app.translator.trans('fof-filter.admin.email_help'),
-              placeholder: app.translator.trans('fof-filter.admin.email.default_text')
+              placeholder: app.translator.trans('fof-filter.admin.email.default_text'),
             })}
             {this.buildSettingComponent({
               type: 'boolean',
