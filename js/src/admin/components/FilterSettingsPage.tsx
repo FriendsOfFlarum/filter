@@ -21,6 +21,11 @@ export default class FilterSettingsPage extends ExtensionPage {
               placeholder: app.translator.trans('fof-filter.admin.input.placeholder'),
               help: app.translator.trans('fof-filter.admin.bad_words_help'),
             })}
+            {this.buildSettingComponent({
+              type: 'boolean',
+              setting: 'fof-filter.autoDeletePosts',
+              label: app.translator.trans('fof-filter.admin.input.switch.delete'),
+            })}
             <hr />
             <h2>{app.translator.trans('fof-filter.admin.auto_merge_title')}</h2>
             {this.buildSettingComponent({

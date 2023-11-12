@@ -61,10 +61,14 @@ class CheckPost
         }
 
         if ($this->checkContent($post->content)) {
-            $this->flagPost($post);
+            if ((bool) $this->settings->get('fof-filter.autoDeletePosts')) {
+                $this->deletePost($post);
+            } else {
+                $this->flagPost($post);
 
-            if ((bool) $this->settings->get('fof-filter.emailWhenFlagged') && $post->emailed == 0) {
-                $this->sendEmail($post);
+                if ((bool) $this->settings->get('fof-filter.emailWhenFlagged') && $post->emailed == 0) {
+                    $this->sendEmail($post);
+                }
             }
         }
     }
@@ -86,6 +90,17 @@ class CheckPost
         );
 
         return $isExplicit;
+    }
+
+    public function deletePost(Post $post): void
+    {
+        $post->is_approved = false;
+        $post->auto_mod = true;
+        $post->afterSave(function ($post) {
+            if ($post->number == 1) {
+                $post->discussion->delete();
+            }
+        });
     }
 
     public function flagPost(Post $post): void

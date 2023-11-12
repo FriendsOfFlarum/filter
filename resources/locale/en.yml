@@ -18,6 +18,7 @@ fof-filter:
             switch: 
               email: Email user when post is filtered
               merge: Auto merge double posts
+              delete: Auto delete filtered posts
             email_subject: Subject
             email_body: Body
         nav:
