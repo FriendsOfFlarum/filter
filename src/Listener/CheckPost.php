@@ -11,6 +11,7 @@
 
 namespace FoF\Filter\Listener;
 
+use Carbon\Carbon;
 use Flarum\Flags\Event\Created;
 use Flarum\Flags\Flag;
 use Flarum\Post\Event\Saving;
@@ -85,6 +86,7 @@ class CheckPost
                 if ($matches) {
                     $isExplicit = true;
                 }
+                return $matches[0];
             },
             str_replace(' ', '', $postContent)
         );
@@ -94,10 +96,11 @@ class CheckPost
 
     public function deletePost(Post $post): void
     {
+        /** @phpstan-ignore-next-line */
         $post->is_approved = false;
         $post->auto_mod = true;
         $post->afterSave(function ($post) {
-            if ($post->number == 1) {
+            if ($post->number === 1) {
                 $post->discussion->delete();
             }
         });
@@ -105,6 +108,7 @@ class CheckPost
 
     public function flagPost(Post $post): void
     {
+        /** @phpstan-ignore-next-line */
         $post->is_approved = false;
         $post->auto_mod = true;
         $post->afterSave(function ($post) {
@@ -117,7 +121,7 @@ class CheckPost
             $flag->post_id = $post->id;
             $flag->type = 'autoMod';
             $flag->reason_detail = $this->translator->trans('fof-filter.forum.flag_message');
-            $flag->created_at = time();
+            $flag->created_at = Carbon::now();
             $flag->save();
 
             $this->bus->dispatch(new Created($flag, new Guest()));
