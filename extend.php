@@ -14,6 +14,7 @@ namespace FoF\Filter;
 use Flarum\Extend;
 use Flarum\Post\Event\Posted;
 use Flarum\Post\Event\Saving as PostSaving;
+use Flarum\Post\Post;
 use Flarum\Settings\Event\Saving as SettingSaving;
 use FoF\Filter\Listener\AddCensorChecks;
 use FoF\Filter\Listener\AutoMerge;
@@ -31,6 +32,10 @@ return [
 
     (new Extend\View())
         ->namespace('fof-filter', __DIR__.'/views'),
+
+    (new Extend\Model(Post::class))
+        ->cast('auto_mod', 'bool')
+        ->cast('emailed', 'bool'),
 
     (new Extend\Event())
         ->listen(SettingSaving::class, AddCensorChecks::class)
