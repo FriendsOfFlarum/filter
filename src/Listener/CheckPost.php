@@ -18,6 +18,7 @@ use Flarum\Post\Event\Saving;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Guest;
+use FoF\Filter\CensorGenerator;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Mail\Mailer;
 use Illuminate\Mail\Message;
@@ -76,7 +77,7 @@ class CheckPost
 
     public function checkContent($postContent): bool
     {
-        $censors = json_decode($this->settings->get('fof-filter.censors'), true);
+        $censors = $this->getCensors();
 
         $isExplicit = false;
 
@@ -92,6 +93,20 @@ class CheckPost
         );
 
         return $isExplicit;
+    }
+
+    protected function getCensors(): array
+    {
+        $censors = json_decode($this->settings->get('fof-filter.censors'), true);
+
+        // Ensure $censors is a non-empty array
+        if (!is_array($censors) || empty($censors)) {
+            // Censors have not been initialized correctly, generate them
+            $censors = CensorGenerator::generateCensors($this->settings->get('fof-filter.words'));
+            $this->settings->set('fof-filter.censors', json_encode($censors));
+        }
+
+        return $censors;
     }
 
     public function deletePost(Post $post): void

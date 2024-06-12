@@ -15,13 +15,11 @@ class CreatePostTest extends TestCase
     {
         $this->extension('flarum-flags', 'flarum-approval', 'fof-filter');
 
+        $this->setting('fof-filter.words', 'wibble'.PHP_EOL.'wobble');
+
         $this->prepareDatabase([
             'users' => [
                 $this->normalUser(),
-            ],
-            'settings' => [
-                ['key' => 'fof-filter.words', 'value' => 'wibble'.PHP_EOL.'wobble'.PHP_EOL],
-                ['key' => 'fof-filter.censors', 'value' => '["\/(w|w\\.|w\\-|\u03c9|\u03c8|\u03a8)(i|i\\.|i\\-|!|\\||\\]\\[|]|1|\u222b|\u00cc|\u00cd|\u00ce|\u00cf|\u00ec|\u00ed|\u00ee|\u00ef)(b|b\\.|b\\-|8|\\|3|\u00df|\u0392|\u03b2)(b|b\\.|b\\-|8|\\|3|\u00df|\u0392|\u03b2)(l|1\\.|l\\-|!|\\||\\]\\[|]|\u00a3|\u222b|\u00cc|\u00cd|\u00ce|\u00cf)(e|e\\.|e\\-|3|\u20ac|\u00c8|\u00e8|\u00c9|\u00e9|\u00ca|\u00ea|\u2211)\/i","\/(w|w\\.|w\\-|\u03c9|\u03c8|\u03a8)(o|o\\.|o\\-|0|\u039f|\u03bf|\u03a6|\u00a4|\u00b0|\u00f8)(b|b\\.|b\\-|8|\\|3|\u00df|\u0392|\u03b2)(b|b\\.|b\\-|8|\\|3|\u00df|\u0392|\u03b2)(l|1\\.|l\\-|!|\\||\\]\\[|]|\u00a3|\u222b|\u00cc|\u00cd|\u00ce|\u00cf)(e|e\\.|e\\-|3|\u20ac|\u00c8|\u00e8|\u00c9|\u00e9|\u00ca|\u00ea|\u2211)\/i"]']
             ]
         ]);
 
