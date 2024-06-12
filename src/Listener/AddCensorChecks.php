@@ -21,12 +21,12 @@ class AddCensorChecks
      * @var Cache
      */
     protected $cache;
-    
+
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
     }
-    
+
     public function handle(Saving $event)
     {
         if (isset($event->settings['fof-filter.words'])) {
