@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of fof/filter.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace FoF\Filter\Tests\integration\api;
 
 use Flarum\Discussion\Discussion;
@@ -20,11 +29,10 @@ class CreatePostTest extends TestCase
         $this->prepareDatabase([
             'users' => [
                 $this->normalUser(),
-            ]
+            ],
         ]);
 
         parent::setUp();
-
     }
 
     /**
@@ -35,13 +43,13 @@ class CreatePostTest extends TestCase
         $response = $this->send(
             $this->request('POST', '/api/discussions', [
                 'authenticatedAs' => 2,
-                'json' => [
+                'json'            => [
                     'data' => [
                         'attributes' => [
-                            'title' => 'test - too-obscure',
+                            'title'   => 'test - too-obscure',
                             'content' => 'predetermined content for automated testing - too-obscure',
                         ],
-                    ]
+                    ],
                 ],
             ])
         );
@@ -72,13 +80,13 @@ class CreatePostTest extends TestCase
         $response = $this->send(
             $this->request('POST', '/api/discussions', [
                 'authenticatedAs' => 2,
-                'json' => [
+                'json'            => [
                     'data' => [
                         'attributes' => [
-                            'title' => 'test - wibble',
+                            'title'   => 'test - wibble',
                             'content' => 'predetermined content for automated testing - wibble',
                         ],
-                    ]
+                    ],
                 ],
             ])
         );

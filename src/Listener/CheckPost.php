@@ -87,6 +87,7 @@ class CheckPost
                 if ($matches) {
                     $isExplicit = true;
                 }
+
                 return $matches[0];
             },
             str_replace(' ', '', $postContent)
