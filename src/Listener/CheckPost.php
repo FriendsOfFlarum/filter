@@ -20,6 +20,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Guest;
 use FoF\Filter\CensorGenerator;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Cache\Store as Cache;
 use Illuminate\Mail\Mailer;
 use Illuminate\Mail\Message;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -46,12 +47,18 @@ class CheckPost
      */
     protected $bus;
 
-    public function __construct(SettingsRepositoryInterface $settings, TranslatorInterface $translator, Mailer $mailer, Dispatcher $bus)
+    /**
+     * @var Cache
+     */
+    protected $cache;
+
+    public function __construct(SettingsRepositoryInterface $settings, TranslatorInterface $translator, Mailer $mailer, Dispatcher $bus, Cache $cache)
     {
         $this->settings = $settings;
         $this->translator = $translator;
         $this->mailer = $mailer;
         $this->bus = $bus;
+        $this->cache = $cache;
     }
 
     public function handle(Saving $event)
@@ -98,13 +105,13 @@ class CheckPost
 
     protected function getCensors(): array
     {
-        $censors = json_decode($this->settings->get('fof-filter.censors'), true);
+        $censors = json_decode($this->cache->get('fof-filter.censors'), true);
 
         // Ensure $censors is a non-empty array
         if (!is_array($censors) || empty($censors)) {
             // Censors have not been initialized correctly, generate them
             $censors = CensorGenerator::generateCensors($this->settings->get('fof-filter.words'));
-            $this->settings->set('fof-filter.censors', json_encode($censors));
+            $this->cache->forever('fof-filter.censors', json_encode($censors));
         }
 
         return $censors;
