@@ -75,7 +75,7 @@ class CreatePostTest extends TestCase
     /**
      * @test
      */
-    public function create_discussion_with_bad_words()
+    public function create_discussion_with_bad_words_requires_approval()
     {
         $response = $this->send(
             $this->request('POST', '/api/discussions', [
