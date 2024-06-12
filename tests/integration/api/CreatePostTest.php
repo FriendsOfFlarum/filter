@@ -82,6 +82,7 @@ class CreatePostTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider badWords
      */
     public function create_discussion_with_bad_words_requires_approval(string $badWord)
