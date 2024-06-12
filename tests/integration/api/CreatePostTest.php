@@ -72,10 +72,19 @@ class CreatePostTest extends TestCase
         $this->assertTrue($discussion->is_approved);
     }
 
+    public function badWords()
+    {
+        return [
+            ['wibble'],
+            ['wobble'],
+        ];
+    }
+
     /**
      * @test
+     * @dataProvider badWords
      */
-    public function create_discussion_with_bad_words_requires_approval()
+    public function create_discussion_with_bad_words_requires_approval(string $badWord)
     {
         $response = $this->send(
             $this->request('POST', '/api/discussions', [
@@ -83,8 +92,8 @@ class CreatePostTest extends TestCase
                 'json'            => [
                     'data' => [
                         'attributes' => [
-                            'title'   => 'test - wibble',
-                            'content' => 'predetermined content for automated testing - wibble',
+                            'title'   => "test - $badWord",
+                            'content' => "predetermined content for automated testing - $badWord",
                         ],
                     ],
                 ],
@@ -97,13 +106,13 @@ class CreatePostTest extends TestCase
         $discussion = Discussion::firstOrFail();
         $data = json_decode($response->getBody()->getContents(), true);
 
-        $this->assertEquals('test - wibble', $discussion->title);
-        $this->assertEquals('test - wibble', Arr::get($data, 'data.attributes.title'));
+        $this->assertEquals("test - $badWord", $discussion->title);
+        $this->assertEquals("test - $badWord", Arr::get($data, 'data.attributes.title'));
 
         $post = $discussion->firstPost;
 
         $this->assertNotNull($post);
-        $this->assertEquals('predetermined content for automated testing - wibble', $post->content);
+        $this->assertEquals("predetermined content for automated testing - $badWord", $post->content);
 
         $this->assertFalse($post->is_approved);
         $this->assertFalse($discussion->is_approved);

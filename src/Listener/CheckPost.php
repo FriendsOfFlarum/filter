@@ -110,7 +110,7 @@ class CheckPost
         // Ensure $censors is a non-empty array
         if (!is_array($censors) || empty($censors)) {
             // Censors have not been initialized correctly, generate them
-            $censors = CensorGenerator::generateCensors($this->settings->get('fof-filter.words'));
+            $censors = CensorGenerator::generateCensors($this->settings->get('fof-filter.words', ''));
             $this->cache->forever('fof-filter.censors', json_encode($censors));
         }
 
