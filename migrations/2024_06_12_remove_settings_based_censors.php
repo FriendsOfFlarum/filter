@@ -15,7 +15,6 @@ return [
     'up' => function (Builder $schema) {
         $db = $schema->getConnection();
         $db->table('settings')->where('key', 'fof-filter.censors')->delete();
-
     },
     'down' => function (Builder $schema) {
         // Nothing
