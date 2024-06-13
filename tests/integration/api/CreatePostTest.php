@@ -13,10 +13,10 @@ namespace FoF\Filter\Tests\integration\api;
 
 use Flarum\Discussion\Discussion;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
-use Flarum\Testing\integration\TestCase;
+use FoF\Filter\Tests\integration\FilterTestCase;
 use Illuminate\Support\Arr;
 
-class CreatePostTest extends TestCase
+class CreatePostTest extends FilterTestCase
 {
     use RetrievesAuthorizedUsers;
 
@@ -24,7 +24,8 @@ class CreatePostTest extends TestCase
     {
         $this->extension('flarum-flags', 'flarum-approval', 'fof-filter');
 
-        $this->setting('fof-filter.words', 'wibble'.PHP_EOL.'wobble');
+        //$this->addWordsToFilter('wibble'.PHP_EOL.'wobble');
+        $this->manyWords();
 
         $this->prepareDatabase([
             'users' => [
