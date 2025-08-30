@@ -42,6 +42,7 @@ export default class FilterSettingsPage extends ExtensionPage {
             })}
             <hr />
             <h2>{app.translator.trans('fof-filter.admin.input.email_label')}</h2>
+            <p className="helpText">{app.translator.trans('fof-filter.admin.input.email_help')}</p>
             {this.buildSettingComponent({
               type: 'string',
               setting: 'fof-filter.flaggedSubject',
