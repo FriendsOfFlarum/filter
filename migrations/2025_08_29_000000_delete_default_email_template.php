@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * This file is part of fof/filter.
+ *
+ * Copyright (c) FriendsOfFlarum.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 use Illuminate\Database\Schema\Builder;
 
@@ -23,7 +31,7 @@ EOT;
                 return !empty(trim($line));
             });
 
-;            // Convert to lowercase for case-insensitive comparison and re-index
+            // Convert to lowercase for case-insensitive comparison and re-index
             return array_values(array_map('strtolower', $filteredLines));
         };
 
@@ -44,13 +52,13 @@ EOT;
             ->where('key', 'fof-filter.flaggedEmail')
             ->first();
 
-        if ($subjectSetting && $isEqualNormalized($defaultSubject, $subjectSetting->value))  {
+        if ($subjectSetting && $isEqualNormalized($defaultSubject, $subjectSetting->value)) {
             $db->table('settings')
                 ->where('key', 'fof-filter.flaggedSubject')
                 ->delete();
         }
 
-        if ($emailSetting && $isEqualNormalized($defaultText, $emailSetting->value))  {
+        if ($emailSetting && $isEqualNormalized($defaultText, $emailSetting->value)) {
             $db->table('settings')
                 ->where('key', 'fof-filter.flaggedEmail')
                 ->delete();
@@ -58,5 +66,5 @@ EOT;
     },
     'down' => static function ($schema) {
         // No need to reverse
-    }
+    },
 ];
