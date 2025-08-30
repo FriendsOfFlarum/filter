@@ -146,8 +146,7 @@ class CheckPost
 
         $email = $post->user->email;
 
-        // Escape the username to prevent XSS - use strip_tags and htmlentities for better international support
-        $safeUsername = htmlentities($post->user->username, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $safeUsername = htmlentities(strip_tags($post->user->username), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
         // Replace %USERNAME% placeholder directly with the safe username
         $formattedText = str_replace('%USERNAME%', $safeUsername, $text);
