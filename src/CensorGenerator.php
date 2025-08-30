@@ -51,7 +51,7 @@ class CensorGenerator
         $filteredBadwords = array_filter(array_map('trim', $badwords));
 
         return array_map(static function ($word) {
-            return '/' . str_ireplace(array_keys(self::LEET_REPLACE), array_values(self::LEET_REPLACE), $word) . '/i';
+            return '/'.str_ireplace(array_keys(self::LEET_REPLACE), array_values(self::LEET_REPLACE), $word).'/i';
         }, $filteredBadwords);
     }
 }
