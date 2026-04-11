@@ -55,6 +55,8 @@ class AutoMergePostReplyHandler
         if (
             !$this->settings->get('fof-filter.autoMergePosts')
             || $command->isFirstPost
+            // If the new post contains a poll, skip merging to avoid potential issues.
+            || Arr::has($command->data, 'attributes.poll')
         ) {
             return $this->original->handle($command);
         }
