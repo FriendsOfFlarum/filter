@@ -94,7 +94,7 @@ class AutoMergePostReplyHandler
         if ($this->settings->get('fof-filter.autoMergeDivider')) {
             $label = $this->translator->trans(
                 'fof-filter.views.auto_merged_divider',
-                ['{datetime}' => Carbon::now()->format( $this->translator->trans('fof-filter.views.auto_merged_datetime_format'))]
+                ['{datetime}' => Carbon::now()->format($this->translator->trans('fof-filter.views.auto_merged_datetime_format'))]
             );
             $parts[] = "---\n\n_{$label}_\n\n---";
         }
