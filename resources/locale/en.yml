@@ -12,6 +12,7 @@ fof-filter:
         countLabel: Censor Tolorance
         cooldownLabel: Merge Post Cooldown
         auto_merge_title: Auto merge
+        merge_divider_help: A divider will be inserted between the existing post content and the newly merged content.
         input:
             placeholder: Strings to be filtered
             filter_title: Strings to filter
@@ -20,6 +21,7 @@ fof-filter:
             switch:
               email: Email user when post is filtered
               merge: Auto merge double posts
+              merge_divider: Add a divider when posts are automatically merged
               delete: Auto delete filtered posts
             email_subject: Subject
             email_body: Body
@@ -38,3 +40,6 @@ fof-filter:
                 If you believe this was an error, you are in luck, each removed post is reviewed by our moderators. If they find that this was wrongfully removed, they will restore it.
 
                 Thank you for your understanding.
+    views:
+      auto_merged_divider: 'Posts merged automatically: {datetime}'
+      auto_merged_datetime_format: 'M j, Y, H:i'
