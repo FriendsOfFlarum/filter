@@ -92,9 +92,13 @@ class AutoMergePostReplyHandler
         $parts = [$lastPost->content];
 
         if ($this->settings->get('fof-filter.autoMergeDivider')) {
+            $locale = $actor->getPreference('locale')
+                ?? $this->settings->get('default_locale')
+                ?? 'en';
+
             $label = $this->translator->trans(
                 'fof-filter.views.auto_merged_divider',
-                ['{datetime}' => Carbon::now()->format($this->translator->trans('fof-filter.views.auto_merged_datetime_format'))]
+                ['{datetime}' => Carbon::now()->locale($locale)->translatedFormat($this->translator->trans('fof-filter.views.auto_merged_datetime_format'))]
             );
             $parts[] = "---\n\n_{$label}_\n\n---";
         }
