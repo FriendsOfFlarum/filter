@@ -13,6 +13,7 @@ namespace FoF\Filter\Handler;
 
 use Flarum\Discussion\DiscussionRepository;
 use Flarum\Foundation\DispatchEventsTrait;
+use Flarum\Locale\Translator;
 use Flarum\Post\Command\PostReply;
 use Flarum\Post\Command\PostReplyHandler;
 use Flarum\Post\CommentPost;
@@ -32,19 +33,22 @@ class AutoMergePostReplyHandler
     protected SettingsRepositoryInterface $settings;
     protected PostRepository $posts;
     protected DiscussionRepository $discussions;
+    protected Translator $translator;
 
     public function __construct(
         PostReplyHandler $original,
         SettingsRepositoryInterface $settings,
         PostRepository $posts,
         DiscussionRepository $discussions,
-        Dispatcher $events
+        Dispatcher $events,
+        Translator $translator
     ) {
         $this->original = $original;
         $this->settings = $settings;
         $this->posts = $posts;
         $this->discussions = $discussions;
         $this->events = $events;
+        $this->translator = $translator;
     }
 
     /**
@@ -85,8 +89,22 @@ class AutoMergePostReplyHandler
 
         $actor->assertCan('reply', $discussion);
 
-        $newContent = Arr::get($command->data, 'attributes.content', '');
-        $mergedContent = $lastPost->content."\n\n".$newContent;
+        $parts = [$lastPost->content];
+
+        if ($this->settings->get('fof-filter.autoMergeDivider')) {
+            $locale = $actor->getPreference('locale')
+                ?? $this->settings->get('default_locale')
+                ?? 'en';
+
+            $label = $this->translator->trans(
+                'fof-filter.views.auto_merged_divider',
+                ['{datetime}' => Carbon::now()->locale($locale)->translatedFormat($this->translator->trans('fof-filter.views.auto_merged_datetime_format'))]
+            );
+            $parts[] = "---\n\n_{$label}_\n\n---";
+        }
+
+        $parts[] = Arr::get($command->data, 'attributes.content', '');
+        $mergedContent = implode("\n\n", $parts);
 
         $lastPost->revise($mergedContent, $actor);
 

@@ -40,6 +40,12 @@ export default class FilterSettingsPage extends ExtensionPage {
               help: app.translator.trans('fof-filter.admin.help2'),
               min: 0,
             })}
+            {this.buildSettingComponent({
+              type: 'boolean',
+              setting: 'fof-filter.autoMergeDivider',
+              label: app.translator.trans('fof-filter.admin.input.switch.merge_divider'),
+              help: app.translator.trans('fof-filter.admin.merge_divider_help'),
+            })}
             <hr />
             <h2>{app.translator.trans('fof-filter.admin.input.email_label')}</h2>
             <p className="helpText">{app.translator.trans('fof-filter.admin.input.email_help')}</p>
