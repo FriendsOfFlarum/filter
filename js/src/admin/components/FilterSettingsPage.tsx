@@ -23,6 +23,11 @@ export default class FilterSettingsPage extends ExtensionPage {
             })}
             {this.buildSettingComponent({
               type: 'boolean',
+              setting: 'fof-filter.ignorePrivatePosts',
+              label: app.translator.trans('fof-filter.admin.input.switch.ignore_private_posts'),
+            })}
+            {this.buildSettingComponent({
+              type: 'boolean',
               setting: 'fof-filter.autoDeletePosts',
               label: app.translator.trans('fof-filter.admin.input.switch.delete'),
             })}
