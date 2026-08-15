@@ -29,8 +29,8 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
-        "flarum/core": "^1.2.0",
+        "php": "^8.3",
+        "flarum/core": "^2.0.0",
         "flarum/approval": "*",
         "flarum/flags": "*"
     },
@@ -60,8 +60,8 @@
         }
     },
     "require-dev": {
-        "flarum/phpstan": "*",
-        "flarum/testing": "^1.0.0"
+        "flarum/phpstan": "^2.0.0",
+        "flarum/testing": "^2.0.0"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
@@ -85,5 +85,7 @@
         "psr-4": {
             "FoF\\Filter\\Tests\\": "tests/"
         }
-    }
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
 }
