@@ -27,23 +27,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CheckPost
 {
-    protected SettingsRepositoryInterface $settings;
-
-    protected TranslatorInterface $translator;
-
-    protected Mailer $mailer;
-
-    protected Dispatcher $bus;
-
-    protected Cache $cache;
-
-    public function __construct(SettingsRepositoryInterface $settings, TranslatorInterface $translator, Mailer $mailer, Dispatcher $bus, Cache $cache)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected TranslatorInterface $translator, protected Mailer $mailer, protected Dispatcher $bus, protected Cache $cache)
     {
-        $this->settings = $settings;
-        $this->translator = $translator;
-        $this->mailer = $mailer;
-        $this->bus = $bus;
-        $this->cache = $cache;
     }
 
     public function handle(Saving $event): void

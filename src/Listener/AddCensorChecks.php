@@ -17,14 +17,8 @@ use Illuminate\Contracts\Cache\Store as Cache;
 
 class AddCensorChecks
 {
-    /**
-     * @var Cache
-     */
-    protected $cache;
-
-    public function __construct(Cache $cache)
+    public function __construct(protected Cache $cache)
     {
-        $this->cache = $cache;
     }
 
     public function handle(Saving $event)

@@ -28,22 +28,13 @@ class AutoMergePostReplyHandler
 {
     use DispatchEventsTrait;
 
-    protected PostReplyHandler $original;
-    protected SettingsRepositoryInterface $settings;
-    protected PostRepository $posts;
-    protected DiscussionRepository $discussions;
-
     public function __construct(
-        PostReplyHandler $original,
-        SettingsRepositoryInterface $settings,
-        PostRepository $posts,
-        DiscussionRepository $discussions,
+        protected PostReplyHandler $original,
+        protected SettingsRepositoryInterface $settings,
+        protected PostRepository $posts,
+        protected DiscussionRepository $discussions,
         Dispatcher $events
     ) {
-        $this->original = $original;
-        $this->settings = $settings;
-        $this->posts = $posts;
-        $this->discussions = $discussions;
         $this->events = $events;
     }
 
