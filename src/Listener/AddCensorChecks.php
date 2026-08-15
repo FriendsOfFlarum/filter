@@ -21,7 +21,7 @@ class AddCensorChecks
     {
     }
 
-    public function handle(Saving $event)
+    public function handle(Saving $event): void
     {
         if (isset($event->settings['fof-filter.words'])) {
             $this->cache->forever('fof-filter.censors', json_encode(

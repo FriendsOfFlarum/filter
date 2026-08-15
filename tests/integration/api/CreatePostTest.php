@@ -12,6 +12,7 @@
 namespace FoF\Filter\Tests\integration\api;
 
 use Flarum\Discussion\Discussion;
+use Flarum\Flags\Flag;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use FoF\Filter\Tests\integration\FilterTestCase;
 use Illuminate\Support\Arr;
@@ -116,5 +117,40 @@ class CreatePostTest extends FilterTestCase
 
         $this->assertFalse($post->is_approved);
         $this->assertFalse($discussion->is_approved);
+    }
+
+    #[Test]
+    public function flagged_post_gets_an_auto_mod_flag()
+    {
+        $this->send(
+            $this->request('POST', '/api/discussions', [
+                'authenticatedAs' => 2,
+                'json'            => [
+                    'data' => [
+                        'attributes' => [
+                            'title'   => 'test - wibble',
+                            'content' => 'predetermined content for automated testing - wibble',
+                        ],
+                    ],
+                ],
+            ])
+        );
+
+        $post = Discussion::firstOrFail()->firstPost;
+
+        /** @var Flag $flag */
+        $flag = Flag::query()->where('post_id', $post->id)->firstOrFail();
+
+        $this->assertEquals('autoMod', $flag->type);
+        $this->assertNotEmpty($flag->reason_detail);
+        $this->assertNotNull($flag->created_at);
+
+        // The flag is raised by the extension rather than a member, so it has
+        // no flagging user. flags' own UI reads `post.user()` for the avatar,
+        // so a null `user_id` renders fine.
+        $this->assertNull($flag->user_id);
+
+        // Moderators reach flagged posts through this relation.
+        $this->assertTrue($post->flags->contains($flag));
     }
 }

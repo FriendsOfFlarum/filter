@@ -11,16 +11,16 @@
 
 namespace FoF\Filter\Provider;
 
+use Flarum\Api\Resource\PostResource;
 use Flarum\Foundation\AbstractServiceProvider;
-use Flarum\Post\Command\PostReplyHandler;
-use FoF\Filter\Handler\AutoMergePostReplyHandler;
+use FoF\Filter\Api\Resource\AutoMergePostResource;
 
 class AutoMergeServiceProvider extends AbstractServiceProvider
 {
-    public function register()
+    public function register(): void
     {
-        $this->container->extend(PostReplyHandler::class, function (PostReplyHandler $handler, $container) {
-            return $container->make(AutoMergePostReplyHandler::class, ['original' => $handler]);
-        });
+        // API resources are resolved from the container by `flarum.api.resource_handler`,
+        // so swapping the binding is enough for our subclass to be used everywhere.
+        $this->container->bind(PostResource::class, AutoMergePostResource::class);
     }
 }

@@ -7,5 +7,7 @@ Thumbs.db
 node_modules
 bower_components
 js/dist
+js/dist-typings
 composer.lock
 .phpunit.result.cache
+.phpunit.cache

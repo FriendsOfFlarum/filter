@@ -21,13 +21,14 @@ use Flarum\User\Guest;
 use FoF\Filter\CensorGenerator;
 use Illuminate\Contracts\Cache\Store as Cache;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Mail\Mailer;
 use Illuminate\Mail\Message;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CheckPost
 {
-    public function __construct(protected SettingsRepositoryInterface $settings, protected TranslatorInterface $translator, protected Mailer $mailer, protected Dispatcher $bus, protected Cache $cache)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected TranslatorInterface $translator, protected Mailer $mailer, protected Dispatcher $events, protected Cache $cache, protected ViewFactory $views)
     {
     }
 
@@ -52,8 +53,14 @@ class CheckPost
         }
     }
 
-    public function checkContent($postContent): bool
+    public function checkContent(?string $postContent): bool
     {
+        // Event posts store structured content rather than a string, and
+        // imported posts may have NULL content. Neither can be filtered.
+        if ($postContent === null || $postContent === '') {
+            return false;
+        }
+
         $censors = $this->getCensors();
 
         $isExplicit = false;
@@ -75,7 +82,8 @@ class CheckPost
 
     protected function getCensors(): array
     {
-        $censors = json_decode($this->cache->get('fof-filter.censors'), true);
+        $cached = $this->cache->get('fof-filter.censors');
+        $censors = $cached === null ? null : json_decode($cached, true);
 
         // Ensure $censors is a non-empty array
         if (!is_array($censors) || empty($censors)) {
@@ -117,7 +125,7 @@ class CheckPost
             $flag->created_at = Carbon::now();
             $flag->save();
 
-            $this->bus->dispatch(new Created($flag, new Guest()));
+            $this->events->dispatch(new Created($flag, new Guest()));
         });
     }
 
@@ -129,18 +137,42 @@ class CheckPost
         $text = trim((string) $this->settings->get('fof-filter.flaggedEmail'))
             ?: $this->translator->trans('fof-filter.admin.email.default_text');
 
-        $email = $post->user->email;
+        $user = $post->user;
+        $userEmail = $user->email;
+        $username = $user->display_name;
 
-        $safeUsername = htmlentities(strip_tags($post->user->username), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $safeUsername = htmlentities(strip_tags($user->username), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
         // Replace %USERNAME% placeholder directly with the safe username
         $formattedText = str_replace('%USERNAME%', $safeUsername, $text);
 
+        $forumTitle = $this->settings->get('forum_title');
+
+        // Pass an explicit title so the heading can't inherit a stale `title`
+        // left on the shared (singleton) view factory by an earlier email.
+        // See flarum/framework#4767.
+        $title = $subject;
+
+        // Core's layouts read these off the view factory rather than the data
+        // array, so they have to be shared as well as passed.
+        $this->views->share(compact('forumTitle', 'userEmail', 'username', 'title'));
+
+        // Both views are required: Flarum\Mail\Mailer drops whichever one the
+        // admin's `mail_format` setting excludes, and sends both by default.
         $this->mailer->send(
-            'fof-filter::default',
-            ['text' => $formattedText],
-            function (Message $message) use ($subject, $email) {
-                $message->to($email);
+            [
+                'text' => 'fof-filter::plain',
+                'html' => 'fof-filter::html',
+            ],
+            compact('forumTitle', 'userEmail', 'username', 'title') + [
+                'text' => $formattedText,
+                // The body is admin-authored and may be plain text, so line
+                // breaks have to become markup for the HTML part. nl2br leaves
+                // any HTML they did write untouched.
+                'html' => nl2br($formattedText),
+            ],
+            function (Message $message) use ($subject, $userEmail, $username) {
+                $message->to($userEmail, $username);
                 $message->subject($subject);
             }
         );
