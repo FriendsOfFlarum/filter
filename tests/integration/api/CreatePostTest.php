@@ -15,6 +15,9 @@ use Flarum\Discussion\Discussion;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use FoF\Filter\Tests\integration\FilterTestCase;
 use Illuminate\Support\Arr;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use Flarum\User\User;
 
 class CreatePostTest extends FilterTestCase
 {
@@ -28,7 +31,7 @@ class CreatePostTest extends FilterTestCase
         $this->manyWords();
 
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
             ],
         ]);
@@ -36,9 +39,7 @@ class CreatePostTest extends FilterTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function create_discussion_without_any_bad_words()
     {
         $response = $this->send(
@@ -73,7 +74,7 @@ class CreatePostTest extends FilterTestCase
         $this->assertTrue($discussion->is_approved);
     }
 
-    public function badWords()
+    public static function badWords()
     {
         return [
             ['wibble'],
@@ -81,11 +82,8 @@ class CreatePostTest extends FilterTestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider badWords
-     */
+    #[Test]
+    #[DataProvider('badWords')]
     public function create_discussion_with_bad_words_requires_approval(string $badWord)
     {
         $response = $this->send(
