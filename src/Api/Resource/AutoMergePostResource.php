@@ -47,7 +47,7 @@ class AutoMergePostResource extends PostResource
     }
 
     /**
-     * @param Post $model
+     * @param Post    $model
      * @param Context $context
      */
     public function create(object $model, \Tobyz\JsonApiServer\Context $context): object
@@ -84,11 +84,11 @@ class AutoMergePostResource extends PostResource
      */
     protected function postToMergeInto(Post $model, Context $context): ?CommentPost
     {
-        if (! $model instanceof CommentPost) {
+        if (!$model instanceof CommentPost) {
             return null;
         }
 
-        if (! $this->settings->get('fof-filter.autoMergePosts')) {
+        if (!$this->settings->get('fof-filter.autoMergePosts')) {
             return null;
         }
 
@@ -111,7 +111,7 @@ class AutoMergePostResource extends PostResource
             ->first();
 
         if (
-            ! $lastPost instanceof CommentPost
+            !$lastPost instanceof CommentPost
             || $lastPost->user_id !== $actor->id
             // Never merge into a post the filter has flagged or auto-moderated.
             || $lastPost->auto_mod

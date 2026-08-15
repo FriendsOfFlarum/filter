@@ -14,11 +14,11 @@ namespace FoF\Filter\Tests\integration\api;
 use Flarum\Discussion\Discussion;
 use Flarum\Flags\Flag;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
+use Flarum\User\User;
 use FoF\Filter\Tests\integration\FilterTestCase;
 use Illuminate\Support\Arr;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use Flarum\User\User;
 
 class CreatePostTest extends FilterTestCase
 {

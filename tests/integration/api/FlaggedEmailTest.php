@@ -125,8 +125,8 @@ class FlaggedEmailTest extends FilterTestCase
         // The plain part keeps real newlines rather than markup.
         $plain = $email->getTextBody();
         $this->assertStringNotContainsString('<br', $plain);
-        $this->assertStringContainsString("First line.", $plain);
-        $this->assertStringContainsString("Second line.", $plain);
+        $this->assertStringContainsString('First line.', $plain);
+        $this->assertStringContainsString('Second line.', $plain);
     }
 
     #[Test]
