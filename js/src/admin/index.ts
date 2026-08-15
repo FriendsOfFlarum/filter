@@ -2,7 +2,7 @@ import app from 'flarum/admin/app';
 import FilterSettingsPage from './components/FilterSettingsPage';
 
 app.initializers.add('fof-filter', () => {
-  app.extensionData
+  app.registry
     .for('fof-filter')
     .registerPage(FilterSettingsPage)
     .registerPermission(
