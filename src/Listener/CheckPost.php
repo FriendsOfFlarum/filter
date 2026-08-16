@@ -18,6 +18,7 @@ use Flarum\Post\Event\Saving;
 use Flarum\Post\Post;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Guest;
+use Flarum\User\User;
 use FoF\Filter\CensorGenerator;
 use Illuminate\Contracts\Cache\Store as Cache;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -36,7 +37,7 @@ class CheckPost
     {
         $post = $event->post;
 
-        if ($post->auto_mod || $event->actor->can('bypassFoFFilter', $post->discussion)) {
+        if ($post->auto_mod || $this->mayBypass($event->actor, $post)) {
             return;
         }
 
@@ -62,6 +63,27 @@ class CheckPost
         if ((bool) $this->settings->get('fof-filter.emailWhenFlagged') && $post->emailed == 0) {
             $this->sendEmail($post);
         }
+    }
+
+    /**
+     * Whether this post is exempt from filtering.
+     *
+     * The author is checked as well as the actor: someone else saving the post
+     * — a moderator editing it, say — must not cause content the author was
+     * allowed to write to be filtered on the strength of their own
+     * permissions.
+     */
+    protected function mayBypass(User $actor, Post $post): bool
+    {
+        if ($actor->can('bypassFoFFilter', $post->discussion)) {
+            return true;
+        }
+
+        $author = $post->user;
+
+        return $author !== null
+            && $author->id !== $actor->id
+            && $author->can('bypassFoFFilter', $post->discussion);
     }
 
     public function checkContent(?string $postContent): bool
