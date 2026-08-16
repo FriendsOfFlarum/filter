@@ -63,6 +63,15 @@ class CheckPost
 
         $censors = $this->getCensors();
 
+        $subject = str_replace(' ', '', $postContent);
+
+        // The censor patterns are unicode-aware, and those refuse to run at all
+        // against malformed UTF-8. Salvage what we can rather than letting a
+        // few stray bytes wave the whole post through unchecked.
+        if (! preg_match('//u', $subject)) {
+            $subject = (string) preg_replace('/[\x80-\xFF]/', '', $subject);
+        }
+
         $isExplicit = false;
 
         preg_replace_callback(
@@ -74,7 +83,7 @@ class CheckPost
 
                 return $matches[0];
             },
-            str_replace(' ', '', $postContent)
+            $subject
         );
 
         return $isExplicit;

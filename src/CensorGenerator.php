@@ -50,8 +50,23 @@ class CensorGenerator
         // We need to skip those.
         $filteredBadwords = array_filter(array_map('trim', $badwords));
 
-        return array_map(static function ($word) {
-            return '/'.str_ireplace(array_keys(self::LEET_REPLACE), array_values(self::LEET_REPLACE), $word).'/i';
+        $censors = array_map(static function ($word) {
+            // Escape first: admin-supplied words are literals, so any regex
+            // metacharacter in them must not be treated as syntax. The LEET
+            // keys are all plain letters, which preg_quote leaves alone, so
+            // the substitutions below still apply to an escaped word.
+            $pattern = '/'.str_ireplace(
+                array_keys(self::LEET_REPLACE),
+                array_values(self::LEET_REPLACE),
+                preg_quote($word, '/')
+            ).'/iu';
+
+            // A single malformed pattern aborts preg_replace_callback for the
+            // whole list, silently disabling every word after it, so drop
+            // anything that will not compile.
+            return @preg_match($pattern, '') === false ? null : $pattern;
         }, $filteredBadwords);
+
+        return array_values(array_filter($censors));
     }
 }
