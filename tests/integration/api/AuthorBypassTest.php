@@ -94,7 +94,7 @@ class AuthorBypassTest extends FilterTestCase
 
         $post = Post::query()->findOrFail(1);
 
-        $this->assertTrue((bool) $post->is_approved, "The author may bypass the filter, so their post should not be held.");
+        $this->assertTrue((bool) $post->is_approved, 'The author may bypass the filter, so their post should not be held.');
         $this->assertFalse((bool) $post->auto_mod);
         $this->assertCount(0, $post->flags);
     }
