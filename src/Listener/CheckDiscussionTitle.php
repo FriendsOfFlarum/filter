@@ -30,7 +30,7 @@ class CheckDiscussionTitle
     {
         $discussion = $event->discussion;
 
-        if (! $discussion->isDirty('title')) {
+        if (!$discussion->isDirty('title')) {
             return;
         }
 
@@ -38,7 +38,7 @@ class CheckDiscussionTitle
             return;
         }
 
-        if (! $this->checkPost->checkContent($discussion->title)) {
+        if (!$this->checkPost->checkContent($discussion->title)) {
             return;
         }
 

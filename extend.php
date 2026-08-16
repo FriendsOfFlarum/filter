@@ -11,10 +11,10 @@
 
 namespace FoF\Filter;
 
+use Flarum\Discussion\Event\Saving as DiscussionSaving;
 use Flarum\Extend;
 use Flarum\Post\Event\Saving as PostSaving;
 use Flarum\Post\Post;
-use Flarum\Discussion\Event\Saving as DiscussionSaving;
 use Flarum\Settings\Event\Saving as SettingSaving;
 use FoF\Filter\Listener\AddCensorChecks;
 use FoF\Filter\Listener\CheckDiscussionTitle;
