@@ -12,9 +12,13 @@
 namespace FoF\Filter\Tests\integration\api;
 
 use Flarum\Discussion\Discussion;
+use Flarum\Flags\Flag;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
+use Flarum\User\User;
 use FoF\Filter\Tests\integration\FilterTestCase;
 use Illuminate\Support\Arr;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 class CreatePostTest extends FilterTestCase
 {
@@ -28,7 +32,7 @@ class CreatePostTest extends FilterTestCase
         $this->manyWords();
 
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
             ],
         ]);
@@ -36,9 +40,7 @@ class CreatePostTest extends FilterTestCase
         parent::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function create_discussion_without_any_bad_words()
     {
         $response = $this->send(
@@ -73,7 +75,7 @@ class CreatePostTest extends FilterTestCase
         $this->assertTrue($discussion->is_approved);
     }
 
-    public function badWords()
+    public static function badWords()
     {
         return [
             ['wibble'],
@@ -81,11 +83,8 @@ class CreatePostTest extends FilterTestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider badWords
-     */
+    #[Test]
+    #[DataProvider('badWords')]
     public function create_discussion_with_bad_words_requires_approval(string $badWord)
     {
         $response = $this->send(
@@ -118,5 +117,40 @@ class CreatePostTest extends FilterTestCase
 
         $this->assertFalse($post->is_approved);
         $this->assertFalse($discussion->is_approved);
+    }
+
+    #[Test]
+    public function flagged_post_gets_an_auto_mod_flag()
+    {
+        $this->send(
+            $this->request('POST', '/api/discussions', [
+                'authenticatedAs' => 2,
+                'json'            => [
+                    'data' => [
+                        'attributes' => [
+                            'title'   => 'test - wibble',
+                            'content' => 'predetermined content for automated testing - wibble',
+                        ],
+                    ],
+                ],
+            ])
+        );
+
+        $post = Discussion::firstOrFail()->firstPost;
+
+        /** @var Flag $flag */
+        $flag = Flag::query()->where('post_id', $post->id)->firstOrFail();
+
+        $this->assertEquals('autoMod', $flag->type);
+        $this->assertNotEmpty($flag->reason_detail);
+        $this->assertNotNull($flag->created_at);
+
+        // The flag is raised by the extension rather than a member, so it has
+        // no flagging user. flags' own UI reads `post.user()` for the avatar,
+        // so a null `user_id` renders fine.
+        $this->assertNull($flag->user_id);
+
+        // Moderators reach flagged posts through this relation.
+        $this->assertTrue($post->flags->contains($flag));
     }
 }

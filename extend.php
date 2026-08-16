@@ -21,7 +21,6 @@ use FoF\Filter\Provider\AutoMergeServiceProvider;
 
 return [
     (new Extend\Frontend('admin'))
-        ->css(__DIR__.'/resources/less/admin/admin.less')
         ->js(__DIR__.'/js/dist/admin.js'),
 
     (new Extend\Frontend('forum'))
