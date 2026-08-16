@@ -21,6 +21,7 @@ fof-filter:
               email: Email user when post is filtered
               merge: Auto merge double posts
               delete: Auto delete filtered posts
+              ignore_private_posts: Ignore private posts, eg from Byōbu
             email_subject: Subject
             email_body: Body
         nav:

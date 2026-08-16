@@ -50,6 +50,11 @@ class CheckPost
     {
         $post = $event->post;
 
+        if((bool) $this->settings->get('fof-filter.ignorePrivatePosts')
+            && ($post->is_private || $post->discussion->is_private)) {
+            return;
+        }
+
         if ($post->auto_mod || $event->actor->can('bypassFoFFilter', $post->discussion)) {
             return;
         }
