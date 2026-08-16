@@ -14,8 +14,10 @@ namespace FoF\Filter;
 use Flarum\Extend;
 use Flarum\Post\Event\Saving as PostSaving;
 use Flarum\Post\Post;
+use Flarum\Discussion\Event\Saving as DiscussionSaving;
 use Flarum\Settings\Event\Saving as SettingSaving;
 use FoF\Filter\Listener\AddCensorChecks;
+use FoF\Filter\Listener\CheckDiscussionTitle;
 use FoF\Filter\Listener\CheckPost;
 use FoF\Filter\Provider\AutoMergeServiceProvider;
 
@@ -37,7 +39,8 @@ return [
 
     (new Extend\Event())
         ->listen(SettingSaving::class, AddCensorChecks::class)
-        ->listen(PostSaving::class, CheckPost::class),
+        ->listen(PostSaving::class, CheckPost::class)
+        ->listen(DiscussionSaving::class, CheckDiscussionTitle::class),
 
     (new Extend\ServiceProvider())
         ->register(AutoMergeServiceProvider::class),

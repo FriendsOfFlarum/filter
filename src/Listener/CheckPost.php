@@ -41,15 +41,26 @@ class CheckPost
         }
 
         if ($this->checkContent($post->content)) {
-            if ((bool) $this->settings->get('fof-filter.autoDeletePosts')) {
-                $this->deletePost($post);
-            } else {
-                $this->flagPost($post);
+            $this->moderate($post);
+        }
+    }
 
-                if ((bool) $this->settings->get('fof-filter.emailWhenFlagged') && $post->emailed == 0) {
-                    $this->sendEmail($post);
-                }
-            }
+    /**
+     * Hold a post that tripped the filter, either by deleting it or by
+     * flagging it for a moderator, according to the configured behaviour.
+     */
+    public function moderate(Post $post): void
+    {
+        if ((bool) $this->settings->get('fof-filter.autoDeletePosts')) {
+            $this->deletePost($post);
+
+            return;
+        }
+
+        $this->flagPost($post);
+
+        if ((bool) $this->settings->get('fof-filter.emailWhenFlagged') && $post->emailed == 0) {
+            $this->sendEmail($post);
         }
     }
 
