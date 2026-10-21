@@ -42,17 +42,21 @@ class CheckPost
         }
 
         if ($this->checkContent($post->content)) {
-            $this->moderate($post);
+            $this->moderate($post, !$post->exists);
         }
     }
 
     /**
      * Hold a post that tripped the filter, either by deleting it or by
      * flagging it for a moderator, according to the configured behaviour.
+     *
+     * Only new content is ever deleted. Content that already exists has been
+     * seen, and deleting a first post takes its discussion with it, including
+     * everyone else's replies, so it is flagged for a moderator instead.
      */
-    public function moderate(Post $post): void
+    public function moderate(Post $post, bool $isNew): void
     {
-        if ((bool) $this->settings->get('fof-filter.autoDeletePosts')) {
+        if ($isNew && (bool) $this->settings->get('fof-filter.autoDeletePosts')) {
             $this->deletePost($post);
 
             return;

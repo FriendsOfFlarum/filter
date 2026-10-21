@@ -39,7 +39,9 @@ class AutoDeleteTest extends FilterTestCase
 
         $this->prepareDatabase([
             User::class => [
-                $this->normalUser(),
+                // Counts match the seeded discussion and post, so any drift
+                // after a request comes from that request.
+                $this->normalUser() + ['discussion_count' => 1, 'comment_count' => 1],
             ],
             'group_permission' => [
                 ['group_id' => Group::MEMBER_ID, 'permission' => 'postWithoutThrottle'],
@@ -92,6 +94,29 @@ class AutoDeleteTest extends FilterTestCase
         );
 
         $this->assertEquals(1, Discussion::query()->count());
+    }
+
+    #[Test]
+    public function deleting_a_new_discussion_leaves_the_authors_counts_correct()
+    {
+        $this->send(
+            $this->request('POST', '/api/discussions', [
+                'authenticatedAs' => 2,
+                'json'            => [
+                    'data' => [
+                        'attributes' => [
+                            'title'   => 'a new discussion',
+                            'content' => 'opening post with wibble in it',
+                        ],
+                    ],
+                ],
+            ])
+        );
+
+        $user = User::query()->findOrFail(2);
+
+        $this->assertEquals(1, $user->discussion_count, 'The deleted discussion must not be counted.');
+        $this->assertEquals(1, $user->comment_count, 'The deleted post must not be counted.');
     }
 
     #[Test]

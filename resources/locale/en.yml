@@ -21,6 +21,7 @@ fof-filter:
               email: Email user when post is filtered
               merge: Auto merge double posts
               delete: Auto delete filtered posts
+              delete_help: Only new posts and discussions are deleted. An edit or rename that adds a filtered string to existing content is held for approval instead.
             email_subject: Subject
             email_body: Body
         nav:
