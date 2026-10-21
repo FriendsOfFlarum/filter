@@ -37,7 +37,7 @@ class CheckPost
     {
         $post = $event->post;
 
-        if ($post->auto_mod || $this->mayBypass($event->actor, $post)) {
+        if ($this->contentUnchanged($post) || $this->mayBypass($event->actor, $post)) {
             return;
         }
 
@@ -63,6 +63,19 @@ class CheckPost
         if ((bool) $this->settings->get('fof-filter.emailWhenFlagged') && $post->emailed == 0) {
             $this->sendEmail($post);
         }
+    }
+
+    /**
+     * Only new content, or an edit to it, can bring in a filtered word.
+     *
+     * Saving a post without touching its content, as a moderator hiding or
+     * approving it does, must not filter it, or approving a held post would
+     * flag it straight back. Having been filtered before is no exemption:
+     * the next edit is checked like any other.
+     */
+    protected function contentUnchanged(Post $post): bool
+    {
+        return $post->exists && !$post->isDirty('content');
     }
 
     /**
@@ -158,6 +171,12 @@ class CheckPost
             if ($post->number == 1) {
                 $post->discussion->is_approved = false;
                 $post->discussion->save();
+            }
+
+            // A post still waiting on one of our flags gets no second one
+            // when it is edited again.
+            if (Flag::query()->where('post_id', $post->id)->where('type', 'autoMod')->exists()) {
+                return;
             }
 
             $flag = new Flag();
