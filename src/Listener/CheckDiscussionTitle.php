@@ -42,7 +42,7 @@ class CheckDiscussionTitle
             return;
         }
 
-        $this->moderateFirstPostAfterSave($discussion);
+        $this->moderateFirstPostAfterSave($discussion, !$discussion->exists);
     }
 
     /**
@@ -53,14 +53,17 @@ class CheckDiscussionTitle
      * the discussion is first saved: core creates it afterwards and saves the
      * discussion a second time to attach it. So if there is no post to act on
      * yet, wait for that next save.
+     *
+     * Whether the discussion is new is decided before it is first saved: by
+     * the time the post exists, both of them do.
      */
-    protected function moderateFirstPostAfterSave(Discussion $discussion): void
+    protected function moderateFirstPostAfterSave(Discussion $discussion, bool $isNew): void
     {
-        $discussion->afterSave(function (Discussion $discussion) {
+        $discussion->afterSave(function (Discussion $discussion) use ($isNew) {
             $post = $discussion->firstPost ?? $discussion->posts()->where('number', 1)->first();
 
             if ($post === null) {
-                $this->moderateFirstPostAfterSave($discussion);
+                $this->moderateFirstPostAfterSave($discussion, $isNew);
 
                 return;
             }
@@ -69,7 +72,7 @@ class CheckDiscussionTitle
                 return;
             }
 
-            $this->checkPost->moderate($post);
+            $this->checkPost->moderate($post, $isNew);
             $post->save();
         });
     }

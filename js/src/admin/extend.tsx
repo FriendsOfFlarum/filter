@@ -22,6 +22,7 @@ export default [
         setting: 'fof-filter.autoDeletePosts',
         type: 'boolean',
         label: app.translator.trans('fof-filter.admin.input.switch.delete'),
+        help: app.translator.trans('fof-filter.admin.input.switch.delete_help'),
       }),
       80
     )
