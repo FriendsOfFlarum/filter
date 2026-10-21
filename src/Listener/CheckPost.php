@@ -20,6 +20,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Guest;
 use Flarum\User\User;
 use FoF\Filter\CensorGenerator;
+use FoF\Filter\Event\PostWasFiltered;
 use Illuminate\Contracts\Cache\Store as Cache;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\View\Factory as ViewFactory;
@@ -54,19 +55,25 @@ class CheckPost
      * seen, and deleting a first post takes its discussion with it, including
      * everyone else's replies, so it is flagged for a moderator instead.
      */
-    public function moderate(Post $post, bool $isNew): void
+    public function moderate(Post $post, bool $isNew, bool $inTitle = false): void
     {
-        if ($isNew && (bool) $this->settings->get('fof-filter.autoDeletePosts')) {
+        $deleted = $isNew && (bool) $this->settings->get('fof-filter.autoDeletePosts');
+        $emailed = false;
+
+        if ($deleted) {
             $this->deletePost($post);
+        } else {
+            $this->flagPost($post);
 
-            return;
+            if ((bool) $this->settings->get('fof-filter.emailWhenFlagged') && $post->emailed == 0) {
+                $this->sendEmail($post);
+                $emailed = true;
+            }
         }
 
-        $this->flagPost($post);
-
-        if ((bool) $this->settings->get('fof-filter.emailWhenFlagged') && $post->emailed == 0) {
-            $this->sendEmail($post);
-        }
+        $post->afterSave(function (Post $post) use ($deleted, $inTitle, $emailed) {
+            $this->events->dispatch(new PostWasFiltered($post, $deleted, $inTitle, $emailed));
+        });
     }
 
     /**

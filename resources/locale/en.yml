@@ -39,3 +39,12 @@ fof-filter:
                 If you believe this was an error, you are in luck, each removed post is reviewed by our moderators. If they find that this was wrongfully removed, they will restore it.
 
                 Thank you for your understanding.
+
+# Rendered by flarum-audit at flarum-audit.lib.browser.<action>.
+flarum-audit:
+    lib:
+        browser:
+            fof-filter:
+                post_flagged: "{post} by {user} in {discussion} was held for approval by the word filter"
+                post_deleted: "{post} by {user} in {discussion} was deleted by the word filter"
+                post_auto_merged: "A reply was merged into {post} in {discussion}"

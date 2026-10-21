@@ -11,15 +11,28 @@
 
 namespace FoF\Filter;
 
+use Flarum\Audit\Extend\Audit;
 use Flarum\Discussion\Event\Saving as DiscussionSaving;
 use Flarum\Extend;
 use Flarum\Post\Event\Saving as PostSaving;
 use Flarum\Post\Post;
 use Flarum\Settings\Event\Saving as SettingSaving;
+use FoF\Filter\Event\PostWasAutoMerged;
+use FoF\Filter\Event\PostWasFiltered;
 use FoF\Filter\Listener\AddCensorChecks;
 use FoF\Filter\Listener\CheckDiscussionTitle;
 use FoF\Filter\Listener\CheckPost;
 use FoF\Filter\Provider\AutoMergeServiceProvider;
+
+// The matched string and the post's content are left out: the log keeps
+// payloads, and the post itself is linked.
+$filtered = fn (PostWasFiltered $event) => [
+    'post_id'       => $event->post->id,
+    'discussion_id' => $event->post->discussion_id,
+    'user_id'       => $event->post->user_id,
+    'source'        => $event->inTitle ? 'title' : 'content',
+    'emailed'       => $event->emailed,
+];
 
 return [
     (new Extend\Frontend('admin'))
@@ -50,4 +63,15 @@ return [
         ->default('fof-filter.autoMergePosts', false)
         ->default('fof-filter.cooldown', 15)
         ->default('fof-filter.emailWhenFlagged', false),
+
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('flarum-audit', fn () => [
+            (new Audit())
+                ->listen(PostWasFiltered::class, 'fof-filter.post_flagged', fn (PostWasFiltered $event) => $event->deleted ? null : $filtered($event))
+                ->listen(PostWasFiltered::class, 'fof-filter.post_deleted', fn (PostWasFiltered $event) => $event->deleted ? $filtered($event) : null)
+                ->listen(PostWasAutoMerged::class, 'fof-filter.post_auto_merged', fn (PostWasAutoMerged $event) => [
+                    'post_id'       => $event->post->id,
+                    'discussion_id' => $event->post->discussion_id,
+                ]),
+        ]),
 ];

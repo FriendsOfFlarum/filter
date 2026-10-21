@@ -21,6 +21,7 @@ use Flarum\Post\Event\Saving;
 use Flarum\Post\Post;
 use Flarum\Post\PostRepository;
 use Flarum\Settings\SettingsRepositoryInterface;
+use FoF\Filter\Event\PostWasAutoMerged;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -72,6 +73,8 @@ class AutoMergePostResource extends PostResource
         );
 
         $previous->save();
+
+        $this->events->dispatch(new PostWasAutoMerged($previous, $actor));
 
         return $previous;
     }
