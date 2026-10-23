@@ -1110,10 +1110,10 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
   integrity sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
 
-"@flarum/jest-config@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@flarum/jest-config/-/jest-config-2.1.0.tgz#f1fb7ab15931b43ed39fc615c88676645a4776d6"
-  integrity sha512-IxFTFOSYrykO87aVABZqp3xTefR2Y2EVnl6iISIm4Nynmfv36LIR2vw/tpZtumXNIO5JVXjz4SI9uq8IgMIoFA==
+"@flarum/jest-config@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@flarum/jest-config/-/jest-config-2.1.1.tgz#7a7a010d66c75230e990183e13fecd10db204835"
+  integrity sha512-55+ILQTmwa2FvFLlkfgm1J65A0uC4u5BQqgijketNFl6s/dFfpyLd2XxbxQICroUHQtRphp1KU4zPNqn/8fUEg==
   dependencies:
     "@types/jest" "^29.2.2"
     babel-jest "^29.3.1"
@@ -1122,7 +1122,7 @@
     clsx "^1.1.1"
     color-thief-browser "^2.0.2"
     dayjs "^1.10.7"
-    flarum-webpack-config "^3.0.0"
+    flarum-webpack-config "^3.1.0"
     flat "^5.0.2"
     focus-trap "^6.7.1"
     format-message "^6.2.4"
@@ -2743,7 +2743,7 @@ flarum-tsconfig@^2.0.0:
     "@types/throttle-debounce" "^2.1.0"
     dayjs "^1.10.4"
 
-flarum-webpack-config@^3.0.0, flarum-webpack-config@^3.1.0:
+flarum-webpack-config@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/flarum-webpack-config/-/flarum-webpack-config-3.1.0.tgz#8d5d2f2a7f36447428f6d1469cefb025321084ff"
   integrity sha512-pFM2YC30Pj0yt+AU4bU7qFMagX5J3453xVpbCXmgmf7yAYXt8E/eK2bl7P4HM54T+224wUF+38M2mywO+sJt1Q==
@@ -4774,11 +4774,6 @@ typescript-coverage-report@^0.6.1:
     rimraf "^3.0.2"
     semantic-ui-react "^0.88.2"
     type-coverage-core "^2.17.2"
-
-typescript@^4.5.4:
-  version "4.9.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
-  integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@^5.9.3:
   version "5.9.3"
