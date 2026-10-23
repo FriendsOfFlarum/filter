@@ -72,7 +72,7 @@ class CheckDiscussionTitle
                 return;
             }
 
-            $this->checkPost->moderate($post, $isNew);
+            $this->checkPost->moderate($post, $isNew, true);
             $post->save();
         });
     }

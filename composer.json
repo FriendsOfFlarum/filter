@@ -42,7 +42,10 @@
                 "name": "fas fa-filter",
                 "backgroundColor": "#e74c3c",
                 "color": "#fff"
-            }
+            },
+            "optional-dependencies": [
+                "flarum/audit"
+            ]
         },
         "flarum-cli": {
             "modules": {
@@ -53,7 +56,8 @@
     },
     "require-dev": {
         "flarum/phpstan": "^2.0.0",
-        "flarum/testing": "^2.0.0"
+        "flarum/testing": "^2.0.0",
+        "flarum/audit": "^2.0.0"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
